@@ -1,1 +1,2 @@
-assets/*
+assets/elf_pack/*
+*.pyc
