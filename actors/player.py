@@ -7,10 +7,6 @@ from actors.AnimationFrameGenerator import AnimationFrameGenerator
 
 cfg = Config()
 
-# def resource_path(relative_path):
-#     base_path = getattr(sys, '_MEIPASS', os.path.dirname(os.path.abspath(__file__)))
-#     return os.path.join(base_path, relative_path)
-
 class Player(pygame.sprite.Sprite):
     def __init__(self, pos, animation_path, animation_dict):
         super().__init__()
@@ -19,9 +15,10 @@ class Player(pygame.sprite.Sprite):
         self.FrameGenerator = AnimationFrameGenerator()
         self.idle_frames = self.FrameGenerator.get_frames(animation_path, animation_dict, "idle", "regular")
         self.flipped_idle_frames = self.FrameGenerator.get_frames(animation_path, animation_dict, "idle", "flipped")
-        #self.move_frames = self.FrameGenerator.get_frames(animation_path, animation_dict, "walk")
+        self.walk_frames = self.FrameGenerator.get_frames(animation_path, animation_dict, "walk", "regular")
+        self.flipped_walk_frames = self.FrameGenerator.get_frames(animation_path, animation_dict, "walk", "flipped")
         self.player_frames = self.idle_frames
-        self.speed = 8
+        self.speed = 3
         self.direction = pygame.math.Vector2()
         self.flip = False
         self.index = 0
@@ -29,24 +26,41 @@ class Player(pygame.sprite.Sprite):
         self.rect = self.image.get_rect(center = pos)
         self.animation_time = cfg.PLAYER_ANIMATION_TIMER
         self.last_update = pygame.time.get_ticks()
+        self.moving = False
 
     def input(self):
 
         keys = pygame.key.get_pressed()
 
+        if not keys[pygame.K_UP] or keys[pygame.K_DOWN] or keys[pygame.K_LEFT] or keys[pygame.K_RIGHT]:
+            if self.flip:
+                self.player_frames = self.flipped_idle_frames
+            else:
+                self.player_frames = self.idle_frames 
+
         if keys[pygame.K_UP] and self.rect.y > -20:
             self.direction.y = -1
+            if self.flip:
+                self.player_frames = self.flipped_walk_frames
+            else:
+                self.player_frames = self.walk_frames
         elif keys[pygame.K_DOWN] and self.rect.y < cfg.DEFAULT_LEVEL_SIZE * 1.5 - 55:
             self.direction.y = 1
+            if self.flip:
+                self.player_frames = self.flipped_walk_frames
+            else:
+                self.player_frames = self.walk_frames
         else:
             self.direction.y = 0
 
         if keys[pygame.K_RIGHT] and self.rect.x < cfg.DEFAULT_LEVEL_SIZE * 1.5 - 40:
             self.direction.x = 1
+            self.player_frames = self.walk_frames
             self.flip = False
         elif keys[pygame.K_LEFT] and self.rect.x > -20:
             self.direction.x = -1
             self.flip = True
+            self.player_frames = self.flipped_walk_frames
         else:
             self.direction.x = 0      
 
@@ -63,10 +77,16 @@ class Player(pygame.sprite.Sprite):
         self.input()
         self.rect.center += self.direction * self.speed
 
-        if self.flip:
-            self.player_frames = self.flipped_idle_frames
-        else: 
-            self.player_frames = self.idle_frames
+        # if not self.moving:
+        #     if self.flip:
+        #         self.player_frames = self.flipped_idle_frames
+        #     else:
+        #         self.player_frames = self.
+
+        # if self.flip and not self.moving:
+        #     self.player_frames = self.flipped_idle_frames
+        # else: 
+        #     self.player_frames = self.idle_frames
 
 
 
