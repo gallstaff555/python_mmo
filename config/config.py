@@ -5,7 +5,7 @@ class Config:
     ROW = 20
     SCREEN_WIDTH = TILE_SIZE * COL * SCALE
     SCREEN_HEIGHT = TILE_SIZE * ROW * SCALE
-    PLAYER_START = (SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2)
+    PLAYER_START = (50, 50)
     PLAYER_ANIMATION_TIMER = 800
 
     DEFAULT_ELF_ANIMATION_PATH = "../assets/elf_pack/sword/elf_sword_color_3"
