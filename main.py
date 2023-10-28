@@ -15,7 +15,7 @@ def resource_path(relative_path):
 cfg = Config()
 
 pygame.init()
-screen = pygame.display.set_mode((cfg.SCREEN_WIDTH * 3, cfg.SCREEN_HEIGHT * 2), pygame.RESIZABLE)
+screen = pygame.display.set_mode((cfg.SCREEN_WIDTH * 2, cfg.SCREEN_HEIGHT * 2), pygame.RESIZABLE)
 temp_surface = pygame.Surface((cfg.SCREEN_WIDTH, cfg.SCREEN_HEIGHT)).convert()
 pygame.display.set_caption("David MMO")
 
@@ -32,7 +32,7 @@ camera_group.add(player)
 
 clock = pygame.time.Clock()
 fps = 30
-scale = pygame.transform.scale 
+scale = pygame.transform.scale
 running = True 
 
 while running: 

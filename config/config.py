@@ -8,5 +8,7 @@ class Config:
     PLAYER_START = (100, 50)
     PLAYER_ANIMATION_TIMER = 200
 
+    DEFAULT_LEVEL_SIZE = SCREEN_WIDTH;
+
     DEFAULT_ELF_ANIMATION_PATH = "../assets/elf_pack/sword/elf_sword_color_3"
     DEFAULT_ELF_ANIMATIONS = {"idle": 6, "walk": 6, "attack": 6, "death": 6}
