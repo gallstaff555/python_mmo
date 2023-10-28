@@ -1,12 +1,9 @@
 #!/usr/bin/env python3 
 
 import pygame, pytmx, pyscroll
-from config.config import Config
-from actors.player import Player
-from camera.camera_group import CameraGroup
-#from pyscroll.group import PyscrollGroup
-#from world.tiled_map import TiledMap
-#from actors.sprite_group import SpriteGroup
+from game.config.config import Config
+from game.actors.player import Player
+from game.camera.camera_group import CameraGroup
 import os,sys 
 
 def resource_path(relative_path):
@@ -25,7 +22,7 @@ map_file = resource_path("assets/forest_1.tmx")
 tmx_data = pytmx.load_pygame(map_file)
 map_data = pyscroll.data.TiledMapData(tmx_data)
 my_map_layer = pyscroll.BufferedRenderer(map_data, (cfg.SCREEN_WIDTH, cfg.SCREEN_HEIGHT), clamp_camera=True)
-camera_group = pyscroll.PyscrollGroup(map_layer=my_map_layer, default_layer=1)
+camera_group = pyscroll.PyscrollGroup(map_layer=my_map_layer, default_layer=2)
 #camera_group = CameraGroup(my_map_layer)
 
 #camera_sprite_group = SpriteGroup()
