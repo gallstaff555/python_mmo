@@ -17,13 +17,13 @@ class Player(pygame.sprite.Sprite):
         self.FrameGenerator = AnimationFrameGenerator()
         self.idle_frames = self.FrameGenerator.get_frames(animation_path, animation_dict, "idle")
         self.player_frames = self.idle_frames
-        self.speed = 5
+        self.speed = 2
         self.direction = pygame.math.Vector2()
         self.index = 0
         self.image = self.player_frames[0]
         self.rect = self.image.get_rect(center = pos)
         self.animation_time = cfg.PLAYER_ANIMATION_TIMER
-        self.current_time = 0
+        self.last_update = pygame.time.get_ticks()
 
     def input(self):
         keys = pygame.key.get_pressed()
@@ -43,10 +43,13 @@ class Player(pygame.sprite.Sprite):
             self.direction.x = 0      
 
     def update(self):
-        self.index += 1
-        if self.index >= len(self.player_frames):
-            self.index = 0
-        self.image = self.player_frames[self.index]
+        now = pygame.time.get_ticks()
+        if now - self.last_update > cfg.PLAYER_ANIMATION_TIMER:
+            self.last_update = now
+            self.index += 1
+            if self.index >= len(self.player_frames):
+                self.index = 0
+            self.image = self.player_frames[self.index]
 
         self.input()
         self.rect.center += self.direction * self.speed
