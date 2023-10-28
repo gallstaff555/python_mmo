@@ -7,10 +7,10 @@ def resource_path(relative_path):
 
 class AnimationFrameGenerator():
 
-    def get_frames(self, path, anim_dict, type):
+    def get_frames(self, path, anim_dict, type, orientation):
         frames = []
         for i in range(0, anim_dict[type]):
-            frame_file = resource_path(f"{path}/{type}/{type}_{i}.png")
+            frame_file = resource_path(f"{path}/{type}/{orientation}/{type}_{i}.png")
             frame = pygame.image.load(frame_file).convert_alpha()
             frames.append(frame)
         return frames

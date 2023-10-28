@@ -1,11 +1,12 @@
 #!/usr/bin/env python3 
 
 import pygame, pytmx, pyscroll
-from pyscroll.group import PyscrollGroup
 from config.config import Config
-from world.tiled_map import TiledMap
 from actors.player import Player
-from actors.sprite_group import SpriteGroup
+from camera.camera_group import CameraGroup
+#from pyscroll.group import PyscrollGroup
+#from world.tiled_map import TiledMap
+#from actors.sprite_group import SpriteGroup
 import os,sys 
 
 def resource_path(relative_path):
@@ -25,6 +26,7 @@ tmx_data = pytmx.load_pygame(map_file)
 map_data = pyscroll.data.TiledMapData(tmx_data)
 my_map_layer = pyscroll.BufferedRenderer(map_data, (cfg.SCREEN_WIDTH, cfg.SCREEN_HEIGHT), clamp_camera=True)
 camera_group = pyscroll.PyscrollGroup(map_layer=my_map_layer, default_layer=1)
+#camera_group = CameraGroup(my_map_layer)
 
 #camera_sprite_group = SpriteGroup()
 player = Player(cfg.PLAYER_START, cfg.DEFAULT_ELF_ANIMATION_PATH, cfg.DEFAULT_ELF_ANIMATIONS)
@@ -50,8 +52,6 @@ while running:
     camera_group.draw(temp_surface)
     scale(temp_surface, screen.get_size(), screen)
     pygame.display.flip()
-
-
 
 pygame.quit()
 sys.exit()
