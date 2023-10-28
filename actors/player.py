@@ -10,8 +10,8 @@ def resource_path(relative_path):
     return os.path.join(base_path, relative_path)
 
 class Player(pygame.sprite.Sprite):
-    def __init__(self, pos, group, animation_path, animation_dict):
-        super().__init__(group)
+    def __init__(self, pos, animation_path, animation_dict):
+        super().__init__()
         
         self.pos = pygame.Vector2(pos)
         self.FrameGenerator = AnimationFrameGenerator()
@@ -40,7 +40,7 @@ class Player(pygame.sprite.Sprite):
         elif keys[pygame.K_LEFT]:
             self.direction.x = -1
         else:
-            self.direction.x = 0        
+            self.direction.x = 0      
 
     def update(self):
         self.index += 1
@@ -50,6 +50,10 @@ class Player(pygame.sprite.Sprite):
 
         self.input()
         self.rect.center += self.direction * self.speed
+
+    def get_position(self):
+        print(f"{self.rect.x}, {self.rect.y}")
+        #return (self.rect.y, self.rect.x)
 
 
 
