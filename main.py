@@ -15,10 +15,11 @@ cfg = Config()
 map_file = resource_path("assets/forest_1.tmx")
 
 pygame.init()
-screen = pygame.display.set_mode((cfg.SCREEN_WIDTH, cfg.SCREEN_HEIGHT))
+screen = pygame.display.set_mode((cfg.SCREEN_WIDTH / 2, cfg.SCREEN_HEIGHT / 2), pygame.RESIZABLE)
 
-player = Player(cfg.PLAYER_START, cfg.DEFAULT_ELF_ANIMATION_PATH, cfg.DEFAULT_ELF_ANIMATIONS)
-player_sprite_group = SpriteGroup(player)
+camera_sprite_group = SpriteGroup()
+player = Player(cfg.PLAYER_START, camera_sprite_group, cfg.DEFAULT_ELF_ANIMATION_PATH, cfg.DEFAULT_ELF_ANIMATIONS)
+
 
 clock = pygame.time.Clock()
 running = True 
@@ -28,7 +29,6 @@ tile_map = TiledMap(f'{map_file}')
 while running: 
 
     tile_map.render(screen)
-    player_sprite_group.draw(screen)
 
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -36,7 +36,9 @@ while running:
             pygame.quit()
             sys.exit()
 
-    player_sprite_group.update()
+    camera_sprite_group.update()
+    camera_sprite_group.draw(screen)
+
     pygame.display.update()
     clock.tick(10)
 

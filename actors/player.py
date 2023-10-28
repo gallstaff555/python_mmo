@@ -10,25 +10,37 @@ def resource_path(relative_path):
     return os.path.join(base_path, relative_path)
 
 class Player(pygame.sprite.Sprite):
-    def __init__(self, pos, animation_path, animation_dict):
-        super().__init__()
+    def __init__(self, pos, group, animation_path, animation_dict):
+        super().__init__(group)
+        
         self.pos = pygame.Vector2(pos)
-		#self.image = pygame.image.load(image).convert_alpha()
-        self.player_frames = []
         self.FrameGenerator = AnimationFrameGenerator()
         self.idle_frames = self.FrameGenerator.get_frames(animation_path, animation_dict, "idle")
         self.player_frames = self.idle_frames
-        # for i in range(0, 6):
-        #     frame_file = resource_path(f"../assets/elf_pack/sword/elf_sword_color_3/idle/idle_{i}.png")
-        #     frame = pygame.image.load(frame_file).convert_alpha()
-        #     self.player_frames.append(frame)
-
+        self.speed = 5
+        self.direction = pygame.math.Vector2()
         self.index = 0
         self.image = self.player_frames[0]
         self.rect = self.image.get_rect(center = pos)
-        #self.rect = self.image.get_rect(topleft=(x,y))
         self.animation_time = cfg.PLAYER_ANIMATION_TIMER
         self.current_time = 0
+
+    def input(self):
+        keys = pygame.key.get_pressed()
+
+        if keys[pygame.K_UP]:
+            self.direction.y = -1
+        elif keys[pygame.K_DOWN]:
+            self.direction.y = 1
+        else:
+            self.direction.y = 0
+
+        if keys[pygame.K_RIGHT]:
+            self.direction.x = 1
+        elif keys[pygame.K_LEFT]:
+            self.direction.x = -1
+        else:
+            self.direction.x = 0        
 
     def update(self):
         self.index += 1
@@ -36,14 +48,8 @@ class Player(pygame.sprite.Sprite):
             self.index = 0
         self.image = self.player_frames[self.index]
 
+        self.input()
+        self.rect.center += self.direction * self.speed
 
-
-
-    # def load_images():
-    #     player_frames = []
-    #     for i in range(1, 6):
-    #         frame_file = resource_path(f"../assets/elf_pack/archer/{i}.png")
-    #         frame = pygame.image.load(frame_file)
-    #         player_frames.append(frame)
 
 
