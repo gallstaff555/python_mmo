@@ -16,12 +16,12 @@ class Player(pygame.sprite.Sprite):
         self.player_frames = self.animations_map["idle"]
         self.speed = 3
         self.direction = pygame.math.Vector2()
-        self.flip = False
         self.index = 0
         self.image = self.player_frames[0]
         self.rect = self.image.get_rect(center = pos)
         self.animation_time = cfg.PLAYER_ANIMATION_TIMER
         self.last_update = pygame.time.get_ticks()
+        self.flip = False
         self.moving = False
 
     def load_animations(self, animation_path, animation_dict):
@@ -29,7 +29,6 @@ class Player(pygame.sprite.Sprite):
         for anim in cfg.DEFAULT_ANIMATIONS_LIST:
             animations_map[anim] = self.FrameGenerator.get_frames(animation_path, animation_dict, anim, "regular")
             animations_map[f"{anim}_flipped"] = self.FrameGenerator.get_frames(animation_path, animation_dict, anim, "flipped")
-        print(animations_map)
         return animations_map
 
     def input(self):
