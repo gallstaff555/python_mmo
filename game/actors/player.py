@@ -67,19 +67,6 @@ class Player(pygame.sprite.Sprite):
             self.player_frames = self.animations_map["walk_flipped"]
         else:
             self.direction.x = 0  
-    
-    def update_position(self, target_x, target_y):
-        self.target_location = pygame.Vector2((target_x, target_y))
-
-    def move_to(self):
-        if not (self.pos == self.target_location):
-            distance = self.distance_between_vectors(self.pos, self.target_location)    
-            distance_x = distance[0] 
-            print(distance_x)
-
-    def distance_between_vectors(self, vector1, vector2):
-        difference = vector1 - vector2
-        return difference.length()
 
     def update(self):
         now = pygame.time.get_ticks()
@@ -91,3 +78,19 @@ class Player(pygame.sprite.Sprite):
             self.image = self.player_frames[self.index]
         self.input()
         self.rect.center += self.direction * self.speed
+
+    # def update_position(self, target_x, target_y):
+    #     self.target_location = pygame.Vector2((target_x, target_y))
+
+    # def move_to(self):
+    #     if not (self.pos == self.target_location):
+    #         diff_vector = self.distance_between_vectors(self.target_location, self.pos)    
+    #         #distance_x = distance[0] 
+    #         #print(difference)
+    #         movement_vector = diff_vector.normalize() * self.speed
+    #         self.rect.center += self.direction * self.speed
+    #         self.pos += diff_vector
+    #         self.rect.center = self.pos
+
+    # def distance_between_vectors(self, vector1, vector2):
+    #     return vector1 - vector2

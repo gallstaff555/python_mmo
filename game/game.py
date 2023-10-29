@@ -3,7 +3,6 @@
 import pygame, pytmx, pyscroll
 from game.config.config import Config
 from game.actors.player import Player
-from game.input.player_action import PlayerAction
 import os,sys 
 
 def resource_path(relative_path):
@@ -28,7 +27,6 @@ class Game():
     #set up player and add to camera_group
     player = Player(cfg.PLAYER_START, cfg.DEFAULT_ELF_ANIMATION_PATH, cfg.DEFAULT_ELF_ANIMATIONS)
     camera_group.add(player)
-    player_action = PlayerAction(player)
 
     #pygame set up
     clock = pygame.time.Clock()
@@ -49,11 +47,6 @@ class Game():
             elif event.type == pygame.MOUSEBUTTONDOWN:
                 if event.button == 1:
                     player_action.handle_input()
-        
-        # buttons = pygame.mouse.get_pressed()
-        # if buttons[0]:
-        #     print(buttons)
-        #     player_action.handle_input()
         
         camera_group.update()
         camera_group.center((player.rect.center))
