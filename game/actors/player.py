@@ -1,6 +1,6 @@
 import pygame 
-from actors.AnimationFrameGenerator import AnimationFrameGenerator
-from config.config import Config
+from game.actors.AnimationFrameGenerator import AnimationFrameGenerator
+from game.config.config import Config
 
 #TODO normalize speed when traveling diagonally
 
