@@ -1,4 +1,4 @@
-import pygame 
+import pygame
 from game.actors.AnimationFrameGenerator import AnimationFrameGenerator
 from game.config.config import Config
 
@@ -11,6 +11,7 @@ class Player(pygame.sprite.Sprite):
         super().__init__()
         
         self.pos = pygame.Vector2(pos)
+        self.target_location = self.pos
         self.animations_map = self.load_animations(animation_path, animation_dict)
         self.player_frames = self.animations_map["idle"]
         self.speed = 3
@@ -65,10 +66,22 @@ class Player(pygame.sprite.Sprite):
             self.flip = True
             self.player_frames = self.animations_map["walk_flipped"]
         else:
-            self.direction.x = 0      
+            self.direction.x = 0  
+    
+    def update_position(self, target_x, target_y):
+        self.target_location = pygame.Vector2((target_x, target_y))
+
+    def move_to(self):
+        if not (self.pos == self.target_location):
+            distance = self.distance_between_vectors(self.pos, self.target_location)    
+            distance_x = distance[0] 
+            print(distance_x)
+
+    def distance_between_vectors(self, vector1, vector2):
+        difference = vector1 - vector2
+        return difference.length()
 
     def update(self):
-
         now = pygame.time.get_ticks()
         if now - self.last_update > cfg.PLAYER_ANIMATION_TIMER:
             self.last_update = now
@@ -76,8 +89,5 @@ class Player(pygame.sprite.Sprite):
             if self.index >= len(self.player_frames):
                 self.index = 0
             self.image = self.player_frames[self.index]
-
         self.input()
         self.rect.center += self.direction * self.speed
-
-
