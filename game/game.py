@@ -33,7 +33,7 @@ class Game():
     fps = 30
     scale = pygame.transform.scale
     running = True 
-    print(dir(tmx_data))
+    #print(dir(tmx_data))
 
     while running: 
 

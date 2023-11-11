@@ -1,8 +1,11 @@
-FROM ubuntu:latest 
+FROM ubuntu:latest
 
 RUN apt-get update && apt-get install -y \
     sudo \
     python3 \
+    python3-pip \
+    nodejs \
+    npm \
     vim \
     net-tools \
     lsof
@@ -14,6 +17,10 @@ RUN useradd -ms /bin/bash $newuser \
 USER $newuser
 
 WORKDIR /home/$newuser
-COPY echo-server.py .
 
-CMD ["tail", "-f", "/dev/null"]
+RUN pip3 install eventlet python-socketio
+
+COPY server.py .
+
+#CMD ["tail", "-f", "/dev/null"]
+CMD ["python3", "server.py"]
