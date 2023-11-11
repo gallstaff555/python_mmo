@@ -33,6 +33,7 @@ class Game():
     fps = 30
     scale = pygame.transform.scale
     running = True 
+    print(dir(tmx_data))
 
     while running: 
 
@@ -43,10 +44,6 @@ class Game():
                 running = False
                 pygame.quit()
                 sys.exit()
-
-            elif event.type == pygame.MOUSEBUTTONDOWN:
-                if event.button == 1:
-                    player_action.handle_input()
         
         camera_group.update()
         camera_group.center((player.rect.center))

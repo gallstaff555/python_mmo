@@ -16,5 +16,4 @@ USER $newuser
 WORKDIR /home/$newuser
 COPY echo-server.py .
 
-#CMD ["python3", "echo-server.py"]
 CMD ["tail", "-f", "/dev/null"]
