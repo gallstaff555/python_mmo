@@ -1,26 +1,46 @@
-import socketio
-import eventlet
+#!/usr/bin/env python3
 
-# Create a Socket.IO server
-sio = socketio.Server(async_mode='eventlet', cors_allowed_origins='*')
+import socket 
+import _thread
+import sys 
 
-# Create a WSGI application
-app = socketio.WSGIApp(sio)
+server = '127.0.0.1'
+port = 5000
+max_connections = 10
 
-# Define a Socket.IO event for when a client connects
-@sio.event
-def connect(sid, environ):
-    print('Client connected:', sid)
+s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
-@sio.event
-def my_message(sid, data):
-    print('message ', data)
+try:
+    s.bind((server, port))
+except socket.error as e:
+    print(e)
 
-# Define a Socket.IO event for when a client disconnects
-@sio.event
-def disconnect(sid):
-    print('Client disconnected:', sid)
+s.listen(max_connections)
 
-# Run the application using Eventlet
-if __name__ == '__main__':
-    eventlet.wsgi.server(eventlet.listen(('', 5000)), app)
+def threaded_client(conn):
+    conn.send(str.encode("Connected."))
+    reply = ""
+    while True:
+        try:
+            data = conn.recv(2048)
+            reply = data.decode('utf-8')
+        
+            if not data:
+                print('Disconnected.')
+                break
+            else:
+                print(f'Received: {reply}')
+                print(f'Sending: {reply}')
+
+            conn.sendall(str.encode(reply))
+        except:
+            break
+    
+    print('Closing connection.')
+    conn.close()
+
+while True:
+    conn, addr = s.accept()
+    print("connected to:", addr)
+
+    _thread.start_new_thread(threaded_client, (conn,))

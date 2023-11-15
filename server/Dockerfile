@@ -4,11 +4,10 @@ RUN apt-get update && apt-get install -y \
     sudo \
     python3 \
     python3-pip \
-    nodejs \
-    npm \
     vim \
     net-tools \
     lsof
+
 ENV newuser="mmouser"
 RUN useradd -ms /bin/bash $newuser \
     && usermod -aG sudo $newuser \
