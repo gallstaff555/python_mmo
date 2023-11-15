@@ -10,7 +10,7 @@ cfg = Config()
 class Game():
     def __init__(self):
         pygame.init()
-        self.screen = pygame.display.set_mode((cfg.SCREEN_WIDTH * 2, cfg.SCREEN_HEIGHT * 2), pygame.RESIZABLE)
+        self.screen = pygame.display.set_mode((cfg.SCREEN_WIDTH * cfg.CAMERA_SCALE, cfg.SCREEN_HEIGHT * cfg.CAMERA_SCALE), pygame.RESIZABLE)
         self.temp_surface = pygame.Surface((cfg.SCREEN_WIDTH, cfg.SCREEN_HEIGHT)).convert()
         pygame.display.set_caption("Test MMO")
 
