@@ -58,7 +58,7 @@ class Player(pygame.sprite.Sprite):
             else: 
                 self.player_frames = self.animations_map["idle_flipped"]
         elif self.move_to:
-            if self.flipped:
+            if self.move_to[0] < self.pos[0]:
                 self.player_frames = self.animations_map["walk_flipped"]  
             else:
                 self.player_frames = self.animations_map["walk"]
