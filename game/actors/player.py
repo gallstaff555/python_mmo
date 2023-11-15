@@ -19,8 +19,7 @@ class Player(pygame.sprite.Sprite):
         self.rect = self.image.get_rect(center = self.pos)
         self.animation_time = cfg.PLAYER_ANIMATION_TIMER
         self.last_update = pygame.time.get_ticks()
-        self.flip = False
-        self.moving = False
+        self.flipped = False
 
     def load_animations(self, animation_path, animation_dict):
         FrameGenerator = AnimationFrameGenerator()
@@ -52,7 +51,18 @@ class Player(pygame.sprite.Sprite):
             return True
         return False
 
-    def update(self):
+    def animate_self(self):
+        if not self.move_to:
+            if not self.flipped:
+                self.player_frames = self.animations_map["idle"]
+            else: 
+                self.player_frames = self.animations_map["idle_flipped"]
+        elif self.move_to:
+            if self.flipped:
+                self.player_frames = self.animations_map["walk_flipped"]  
+            else:
+                self.player_frames = self.animations_map["walk"]
+
         now = pygame.time.get_ticks()
         if now - self.last_update > cfg.PLAYER_ANIMATION_TIMER:
             self.last_update = now
@@ -60,6 +70,9 @@ class Player(pygame.sprite.Sprite):
             if self.index >= len(self.player_frames):
                 self.index = 0
             self.image = self.player_frames[self.index]
+
+    def update(self):
+        self.animate_self()
         #self.keyboard_input()
         
         if self.move_to:

@@ -30,7 +30,7 @@ class Game():
         self.fps = 30
         self.scale = pygame.transform.scale
         self.running = True 
-        print(dir(self.tmx_data))
+        #print(dir(self.tmx_data))
 
     def resource_path(self, relative_path):
         base_path = getattr(sys, '_MEIPASS', os.path.dirname(os.path.abspath(__file__)))
@@ -43,13 +43,18 @@ class Game():
 
             pygame.time.Clock().tick(self.fps)
 
+            mouse_x, mouse_y = pygame.mouse.get_pos()
+            if mouse_x / cfg.CAMERA_SCALE < self.player.rect.center[0]:
+                self.player.flipped = True 
+            else:
+                self.player.flipped = False
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     running = False
                     pygame.quit()
                     sys.exit()
                 elif event.type == pygame.MOUSEBUTTONDOWN:
-                    mouse_x, mouse_y = pygame.mouse.get_pos()
+                    # calculate player true position with camera and camera scale offset 
                     cam_x, cam_y = self.my_map_layer.view_rect.topleft
                     world_x, world_y = mouse_x / cfg.CAMERA_SCALE + cam_x, mouse_y / cfg.CAMERA_SCALE + cam_y
                     self.player.set_move_to_location((round(world_x), round(world_y)))
