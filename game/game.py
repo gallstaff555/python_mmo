@@ -19,7 +19,7 @@ class Game():
         self.tmx_data = pytmx.load_pygame(self.map_file)
         self.map_data = pyscroll.data.TiledMapData(self.tmx_data)
         self.my_map_layer = pyscroll.BufferedRenderer(self.map_data, (cfg.SCREEN_WIDTH, cfg.SCREEN_HEIGHT), clamp_camera=True)
-        self.camera_group = pyscroll.PyscrollGroup(map_layer=self.my_map_layer, default_layer=2)
+        self.camera_group = pyscroll.PyscrollGroup(map_layer=self.my_map_layer, default_layer=cfg.DEFAULT_PLAYER_LAYER)
 
         #set up player and add to camera_group
         self.player = Player(cfg.PLAYER_START, cfg.DEFAULT_ELF_ANIMATION_PATH, cfg.DEFAULT_ELF_ANIMATIONS)

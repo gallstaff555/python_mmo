@@ -7,9 +7,9 @@ cfg = Config()
 class TiledMap:
     def __init__(self, filename):
         self.tmx_data = pytmx.load_pygame(filename)
-        self.width = self.tmx_data.width * self.tmx_data.tilewidth
-        self.height = self.tmx_data.height * self.tmx_data.tileheight
-        self.total_tiles = self.tmx_data.width * self.tmx_data.height
+        self.width = self.tmx_data.width * self.tmx_data.tilewidth * cfg.SCALE
+        self.height = self.tmx_data.height * self.tmx_data.tileheight * cfg.SCALE
+        self.total_tiles = self.tmx_data.width * self.tmx_data.height * cfg.SCALE
         #self.tile_coords_dict = {}
 
     def render(self, screen):
