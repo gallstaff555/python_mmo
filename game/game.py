@@ -3,6 +3,7 @@
 import pygame, pytmx, pyscroll
 from game.config.config import Config
 from game.actors.player import Player
+from game.actors.move_player import MovePlayer
 import os,sys,math
 
 cfg = Config()
@@ -11,7 +12,7 @@ class Game():
     def __init__(self):
         pygame.init()
         self.screen = pygame.display.set_mode((cfg.SCREEN_WIDTH * cfg.CAMERA_SCALE, cfg.SCREEN_HEIGHT * cfg.CAMERA_SCALE), pygame.RESIZABLE)
-        self.temp_surface = pygame.Surface((cfg.SCREEN_WIDTH, cfg.SCREEN_HEIGHT)).convert()
+        self.surface = pygame.Surface((cfg.SCREEN_WIDTH, cfg.SCREEN_HEIGHT)).convert()
         pygame.display.set_caption("Test MMO")
 
         #set up map and pyscroll
@@ -22,8 +23,25 @@ class Game():
         self.camera_group = pyscroll.PyscrollGroup(map_layer=self.my_map_layer, default_layer=cfg.DEFAULT_PLAYER_LAYER)
 
         #set up player and add to camera_group
-        self.player = Player(cfg.PLAYER_START, cfg.DEFAULT_ELF_ANIMATION_PATH, cfg.DEFAULT_ELF_ANIMATIONS)
+        self.player = Player(cfg.PLAYER_START, cfg.DEFAULT_ELF_ANIMATION_PATH, cfg.DEFAULT_ELF_ANIMATIONS, self.tmx_data)
         self.camera_group.add(self.player)
+
+        # set up invisible collision sprites
+        self.collision_group = pygame.sprite.Group()
+        self.object_layer = self.tmx_data.get_layer_by_name("Collision")
+        for obj in self.object_layer:
+            print(f"Object: {obj.id}")
+        
+            # Create a surface for the sprite
+            sprite_image = pygame.Surface((5, 5))  # Width, Height
+            sprite_image.fill(pygame.Color('blue'))  # Fill with blue color
+            sprite = pygame.sprite.Sprite()  # Instantiate the base Sprite class
+            sprite.image = sprite_image
+            sprite.rect = sprite.image.get_rect(center = (obj.x, obj.y))
+            self.collision_group.add(sprite)
+
+        self.move_player = MovePlayer(self.player, self.collision_group)
+
 
         #pygame set up
         self.clock = pygame.time.Clock()
@@ -58,12 +76,15 @@ class Game():
                 elif event.type == pygame.MOUSEBUTTONDOWN:
                     # calculate player true position with camera and camera scale offset 
                     world_x, world_y = mouse_x / cfg.CAMERA_SCALE + cam_x, mouse_y / cfg.CAMERA_SCALE + cam_y
-                    self.player.set_move_to_location((round(world_x), round(world_y)))
+                    self.move_player.set_move_to_location((round(world_x), round(world_y)))
+
+            self.move_player.update()
 
             self.camera_group.update()
             self.camera_group.center((self.player.rect.center))
-            self.camera_group.draw(self.temp_surface)
-            self.scale(self.temp_surface, self.screen.get_size(), self.screen)
+            self.camera_group.draw(self.surface)
+
+            self.scale(self.surface, self.screen.get_size(), self.screen)
             pygame.display.flip()
 
         pygame.quit()
