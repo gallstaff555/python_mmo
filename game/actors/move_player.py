@@ -40,11 +40,10 @@ class MovePlayer():
             return True
 
     def update(self):
-        pass
-        #self.keyboard_input()
-        if self.player.move_to:
-            if self.move_by_coordinates():
-                self.player.move_to = None  
+        self.keyboard_input()
+        # if self.player.move_to:
+        #     if self.move_by_coordinates():
+        #         self.player.move_to = None  
 
     def keyboard_input(self):
 
