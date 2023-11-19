@@ -1,6 +1,8 @@
 import pygame
 from game.actors.animation_frame_generator import AnimationFrameGenerator
 from game.config.config import Config
+from game.actors.animate_player import AnimatePlayer
+from game.actors.move_player import MovePlayer
 
 
 cfg = Config()
@@ -8,10 +10,11 @@ cfg = Config()
 class Player(pygame.sprite.Sprite):
     def __init__(self, pos, animation_path, animation_dict, tmx_data):
         super().__init__()
+        self.move_player = MovePlayer()
+        self.animate_player = AnimatePlayer(animation_path, animation_dict)
+        self.player_frames = self.animate_player.get_animation("idle")
         self.pos = pos
         self.move_to = None
-        self.animations_map = self.load_animations(animation_path, animation_dict)
-        self.player_frames = self.animations_map["idle"]
         self.speed = 3
         self.index = 0
         self.image = self.player_frames[0]
@@ -20,34 +23,11 @@ class Player(pygame.sprite.Sprite):
         self.last_update = pygame.time.get_ticks()
         self.flipped = False
         self.tmx_data = tmx_data
-
-    def load_animations(self, animation_path, animation_dict):
-        FrameGenerator = AnimationFrameGenerator()
-        animations_map = {}
-        for anim in cfg.DEFAULT_ANIMATIONS_LIST:
-            animations_map[anim] = FrameGenerator.get_frames(animation_path, animation_dict, anim, "regular")
-            animations_map[f"{anim}_flipped"] = FrameGenerator.get_frames(animation_path, animation_dict, anim, "flipped")
-        return animations_map
-
-    def animate_self(self):
-        if not self.move_to:
-            if not self.flipped:
-                self.player_frames = self.animations_map["idle"]
-            else: 
-                self.player_frames = self.animations_map["idle_flipped"]
-        elif self.move_to:
-            if self.move_to[0] < self.pos[0]:
-                self.player_frames = self.animations_map["walk_flipped"]  
-            else:
-                self.player_frames = self.animations_map["walk"]
-
-        now = pygame.time.get_ticks()
-        if now - self.last_update > cfg.PLAYER_ANIMATION_TIMER:
-            self.last_update = now
-            self.index += 1
-            if self.index >= len(self.player_frames):
-                self.index = 0
-            self.image = self.player_frames[self.index]
+        self.direction_x = 0
+        self.direction_y = 0
+        #self.movement_type = "mouse"
+        self.movement_type = "keyboard"
 
     def update(self):
-        self.animate_self()
+        self.animate_player.animate(self)
+        self.move_player.update(self, self.animate_player)

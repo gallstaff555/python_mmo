@@ -3,7 +3,6 @@
 import pygame, pytmx, pyscroll
 from game.config.config import Config
 from game.actors.player import Player
-from game.actors.move_player import MovePlayer
 import os,sys,math
 
 cfg = Config()
@@ -33,14 +32,14 @@ class Game():
             print(f"Object: {obj.id}")
         
             # Create a surface for the sprite
-            sprite_image = pygame.Surface((5, 5))  # Width, Height
-            sprite_image.fill(pygame.Color('blue'))  # Fill with blue color
-            sprite = pygame.sprite.Sprite()  # Instantiate the base Sprite class
+            sprite_image = pygame.Surface((5, 5))  
+            sprite_image.fill(pygame.Color('blue'))  
+            sprite = pygame.sprite.Sprite() 
             sprite.image = sprite_image
             sprite.rect = sprite.image.get_rect(center = (obj.x, obj.y))
             self.collision_group.add(sprite)
 
-        self.move_player = MovePlayer(self.player, self.collision_group)
+        #self.move_player = MovePlayer(self.player)
 
 
         #pygame set up
@@ -74,11 +73,12 @@ class Game():
                     pygame.quit()
                     sys.exit()
                 elif event.type == pygame.MOUSEBUTTONDOWN:
+                    pass
                     # calculate player true position with camera and camera scale offset 
-                    world_x, world_y = mouse_x / cfg.CAMERA_SCALE + cam_x, mouse_y / cfg.CAMERA_SCALE + cam_y
-                    self.move_player.set_move_to_location((round(world_x), round(world_y)))
+                    #world_x, world_y = mouse_x / cfg.CAMERA_SCALE + cam_x, mouse_y / cfg.CAMERA_SCALE + cam_y
+                    #self.player.move_player.set_move_to_location((round(world_x), round(world_y)))
 
-            self.move_player.update()
+            #self.move_player.update()
 
             self.camera_group.update()
             self.camera_group.center((self.player.rect.center))
