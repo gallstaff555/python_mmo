@@ -73,6 +73,9 @@ class MovePlayer():
             self.keyboard_input(player, animator)
             player.rect.x += player.direction_x * player.speed
             player.rect.y += player.direction_y * player.speed 
+            if self.check_collision(player, collision_group):
+                player.rect.x -= player.direction_x * player.speed
+                player.rect.y -= player.direction_y * player.speed
 
         elif cfg.MOVEMENT_TYPE == "mouse" and player.move_to:
             if self.move_by_coordinates(player, collision_group):

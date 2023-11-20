@@ -29,10 +29,7 @@ class Game():
         self.collision_group = pygame.sprite.Group()
         self.object_layer = self.tmx_data.get_layer_by_name("Collision")
         for obj in self.object_layer:
-            #print(f"Object: {obj.id}")
-        
-            # Create a surface for the sprite
-            sprite_image = pygame.Surface((5, 5))  
+            sprite_image = pygame.Surface((1, 1))  
             sprite_image.fill(pygame.Color('blue'))  
             sprite = pygame.sprite.Sprite() 
             sprite.image = sprite_image
@@ -71,7 +68,6 @@ class Game():
                         #calculate player true position with camera and camera scale offset 
                         world_x, world_y = mouse_x / cfg.CAMERA_SCALE + cam_x, mouse_y / cfg.CAMERA_SCALE + cam_y
                         self.player.move_to = (round(world_x), round(world_y))
-                        #self.player.move_player.set_move_to_location((round(world_x), round(world_y)))
 
             self.camera_group.update(self.collision_group)
             self.camera_group.center((self.player.rect.center))
