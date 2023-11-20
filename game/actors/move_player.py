@@ -4,10 +4,6 @@ from game.config.config import Config
 cfg = Config()
 
 class MovePlayer():
-    
-    def set_move_to_location(self, player, location):
-        player.move_to = location
-        print(f"Moving player to {location}")
 
     def move_by_coordinates(self, player, collision_group):
         dx = player.move_to[0] - player.pos[0]
@@ -36,46 +32,48 @@ class MovePlayer():
         for collided_sprite in collisions:
             return True
 
-    def update(self, player, animator):
-        self.keyboard_input(player, animator)
-        player.rect.x += player.direction_x * player.speed
-        player.rect.y += player.direction_y * player.speed 
-        # if self.player.move_to:
-        #     if self.move_by_coordinates():
-        #         self.player.move_to = None  
-
     def keyboard_input(self, player, animator):
 
         keys = pygame.key.get_pressed()
 
         if not keys[pygame.K_UP] or keys[pygame.K_DOWN] or keys[pygame.K_LEFT] or keys[pygame.K_RIGHT]:
             if player.flipped:
-                player.player_frames = animator.animation_map["idle_flipped"]
+                animator.player_frames = animator.animation_map["idle_flipped"]
             else:
-                player.player_frames = animator.animation_map["idle"]
+                animator.player_frames = animator.animation_map["idle"]
 
         if keys[pygame.K_UP] and player.rect.y > -20:
             player.direction_y = -1
             if player.flipped:
-                player.player_frames = animator.animation_map["walk_flipped"]
+                animator.player_frames = animator.animation_map["walk_flipped"]
             else:
-                player.player_frames = animator.animation_map["walk"]
+                animator.player_frames = animator.animation_map["walk"]
         elif keys[pygame.K_DOWN] and player.rect.y < cfg.DEFAULT_LEVEL_SIZE * 1.5 - 55:
             player.direction_y = 1
             if player.flipped:
-                player.player_frames = animator.animation_map["walk_flipped"]
+                animator.player_frames = animator.animation_map["walk_flipped"]
             else:
-                player.player_frames = animator.animation_map["walk"]
+                animator.player_frames = animator.animation_map["walk"]
         else:
             player.direction_y = 0
 
         if keys[pygame.K_RIGHT] and player.rect.x < cfg.DEFAULT_LEVEL_SIZE * 1.5 - 40:
             player.direction_x = 1
-            player.player_frames = animator.animation_map["walk"]
+            animator.player_frames = animator.animation_map["walk"]
             player.flipped = False
         elif keys[pygame.K_LEFT] and player.rect.x > -20:
             player.direction_x = -1
             player.flipped = True
-            player.player_frames = animator.animation_map["walk_flipped"]
+            animator.player_frames = animator.animation_map["walk_flipped"]
         else:
             player.direction_x = 0  
+
+    def update(self, player, animator, collision_group):
+        if cfg.MOVEMENT_TYPE == "keyboard":
+            self.keyboard_input(player, animator)
+            player.rect.x += player.direction_x * player.speed
+            player.rect.y += player.direction_y * player.speed 
+
+        elif cfg.MOVEMENT_TYPE == "mouse" and player.move_to:
+            if self.move_by_coordinates(player, collision_group):
+                player.move_to = None  

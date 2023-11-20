@@ -8,37 +8,37 @@ class AnimatePlayer():
     def __init__(self, animation_path, animation_dict):
         self.last_update = pygame.time.get_ticks()
         self.animation_map = self.load_animations(animation_path, animation_dict)
+        self.player_frames = self.animation_map["idle"]
+        self.index = 0
+        self.last_update = pygame.time.get_ticks()
 
     def load_animations(self, animation_path, animation_dict):
             FrameGenerator = AnimationFrameGenerator()
-            animations_map = {}
+            animations = {}
             for anim in cfg.DEFAULT_ANIMATIONS_LIST:
-                animations_map[anim] = FrameGenerator.get_frames(animation_path, animation_dict, anim, "regular")
-                animations_map[f"{anim}_flipped"] = FrameGenerator.get_frames(animation_path, animation_dict, anim, "flipped")
-            return animations_map
-    
-    def get_animation(self, animation):
-        return self.animation_map[animation]
+                animations[anim] = FrameGenerator.get_frames(animation_path, animation_dict, anim, "regular")
+                animations[f"{anim}_flipped"] = FrameGenerator.get_frames(animation_path, animation_dict, anim, "flipped")
+            return animations
 
     def animate(self, player):
-        if player.movement_type == "mouse":
+        if cfg.MOVEMENT_TYPE == "mouse":
             if not player.move_to:
                 if not player.flipped:
-                    player.player_frames = self.animations_map["idle"]
+                    self.player_frames = self.animation_map["idle"]
                 else: 
-                    player.player_frames = self.animations_map["idle_flipped"]
+                    self.player_frames = self.animation_map["idle_flipped"]
             elif player.move_to:
-                if player.move_to[0] < self.player.pos[0]:
-                    player.player_frames = self.animations_map["walk_flipped"]  
+                if player.move_to[0] < player.pos[0]:
+                    self.player_frames = self.animation_map["walk_flipped"]  
                 else:
-                    player.player_frames = self.animations_map["walk"]
-        elif player.movement_type == "keyboard":
+                    self.player_frames = self.animation_map["walk"]
+        elif cfg.MOVEMENT_TYPE == "keyboard":
             pass
 
         now = pygame.time.get_ticks()
-        if now - player.last_update > cfg.PLAYER_ANIMATION_TIMER:
-            player.last_update = now
-            player.index += 1
-            if player.index >= len(player.player_frames):
-                player.index = 0
-            player.image = player.player_frames[player.index]
+        if now - self.last_update > cfg.PLAYER_ANIMATION_TIMER:
+            self.last_update = now
+            self.index += 1
+            if self.index >= len(self.player_frames):
+                self.index = 0
+            player.image = self.player_frames[self.index]

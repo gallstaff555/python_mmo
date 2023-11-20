@@ -3,7 +3,7 @@
 import pygame, pytmx, pyscroll
 from game.config.config import Config
 from game.actors.player import Player
-import os,sys,math
+import os,sys
 
 cfg = Config()
 
@@ -22,14 +22,14 @@ class Game():
         self.camera_group = pyscroll.PyscrollGroup(map_layer=self.my_map_layer, default_layer=cfg.DEFAULT_PLAYER_LAYER)
 
         #set up player and add to camera_group
-        self.player = Player(cfg.PLAYER_START, cfg.DEFAULT_ELF_ANIMATION_PATH, cfg.DEFAULT_ELF_ANIMATIONS, self.tmx_data)
+        self.player = Player(cfg.PLAYER_START, cfg.DEFAULT_ELF_ANIMATION_PATH, cfg.DEFAULT_ELF_ANIMATIONS)
         self.camera_group.add(self.player)
 
         # set up invisible collision sprites
         self.collision_group = pygame.sprite.Group()
         self.object_layer = self.tmx_data.get_layer_by_name("Collision")
         for obj in self.object_layer:
-            print(f"Object: {obj.id}")
+            #print(f"Object: {obj.id}")
         
             # Create a surface for the sprite
             sprite_image = pygame.Surface((5, 5))  
@@ -39,15 +39,11 @@ class Game():
             sprite.rect = sprite.image.get_rect(center = (obj.x, obj.y))
             self.collision_group.add(sprite)
 
-        #self.move_player = MovePlayer(self.player)
-
-
         #pygame set up
         self.clock = pygame.time.Clock()
         self.fps = 30
         self.scale = pygame.transform.scale
         self.running = True 
-        #print(dir(self.tmx_data))
 
     def resource_path(self, relative_path):
         base_path = getattr(sys, '_MEIPASS', os.path.dirname(os.path.abspath(__file__)))
@@ -73,14 +69,13 @@ class Game():
                     pygame.quit()
                     sys.exit()
                 elif event.type == pygame.MOUSEBUTTONDOWN:
-                    pass
-                    # calculate player true position with camera and camera scale offset 
-                    #world_x, world_y = mouse_x / cfg.CAMERA_SCALE + cam_x, mouse_y / cfg.CAMERA_SCALE + cam_y
-                    #self.player.move_player.set_move_to_location((round(world_x), round(world_y)))
+                    if cfg.MOVEMENT_TYPE == "mouse":
+                        #calculate player true position with camera and camera scale offset 
+                        world_x, world_y = mouse_x / cfg.CAMERA_SCALE + cam_x, mouse_y / cfg.CAMERA_SCALE + cam_y
+                        self.player.move_to = (round(world_x), round(world_y))
+                        #self.player.move_player.set_move_to_location((round(world_x), round(world_y)))
 
-            #self.move_player.update()
-
-            self.camera_group.update()
+            self.camera_group.update(self.collision_group)
             self.camera_group.center((self.player.rect.center))
             self.camera_group.draw(self.surface)
 
