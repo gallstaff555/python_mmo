@@ -1,4 +1,6 @@
 class Config:
+
+    # General
     SCALE = 1
     CAMERA_SCALE = 2
     TILE_SIZE = 16
@@ -7,6 +9,7 @@ class Config:
     SCREEN_WIDTH = TILE_SIZE * COL * SCALE
     SCREEN_HEIGHT = TILE_SIZE * ROW * SCALE 
     DEFAULT_LEVEL_SIZE = SCREEN_WIDTH;
+    FPS = 30
     
     # Player
     PLAYER_START = (150, 120)

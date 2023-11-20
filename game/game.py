@@ -41,7 +41,6 @@ class Game():
 
         #pygame set up
         self.clock = pygame.time.Clock()
-        self.fps = 30
         self.scale = pygame.transform.scale
         self.running = True 
 
@@ -49,12 +48,11 @@ class Game():
         base_path = getattr(sys, '_MEIPASS', os.path.dirname(os.path.abspath(__file__)))
         return os.path.join(base_path, relative_path)
 
-
     def start_game(self):
 
         while self.running: 
 
-            pygame.time.Clock().tick(self.fps)
+            pygame.time.Clock().tick(cfg.FPS)
 
             # Player should face the mouse pointer
             mouse_x, mouse_y = pygame.mouse.get_pos()

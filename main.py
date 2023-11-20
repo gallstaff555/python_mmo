@@ -2,13 +2,12 @@
 
 #TODO 
 #FEATURES
+#Add collision detection and prevent player from moving further if collision detected
 #Add marker to map after clicking to move 
 #Server should store player movement and broadcast to other players
 
 #BUGS
-#Fix bug where player walks in front of all trees 
-#Fix issue where camera scale breaks click to move location
-#Check if moving diagonally is faster than moving up/down
+#Fix movmenent speed: diagonally is faster than moving up/down
 
 from game.game import Game
 
