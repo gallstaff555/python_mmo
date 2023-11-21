@@ -1,6 +1,7 @@
 class Config:
 
     # General
+    TEST = True
     SCALE = 1
     CAMERA_SCALE = 2
     TILE_SIZE = 16
@@ -12,7 +13,7 @@ class Config:
     FPS = 30
     
     # Player
-    PLAYER_START = (150, 120)
+    PLAYER_START = (170, 120)
     PLAYER_ANIMATION_TIMER = 100
     PLAYER_SPRITE_SIZE = 64
     DEFAULT_PLAYER_LAYER = 2
