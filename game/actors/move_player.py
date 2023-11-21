@@ -28,7 +28,7 @@ class MovePlayer():
         return False
     
     def check_collision(self, player, collision_group):
-        collisions = pygame.sprite.spritecollide(player, collision_group, False)
+        collisions = pygame.sprite.spritecollide(player, collision_group, False, pygame.sprite.collide_mask)
         for collided_sprite in collisions:
             return True
 

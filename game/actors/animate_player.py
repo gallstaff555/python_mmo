@@ -7,18 +7,23 @@ cfg = Config()
 class AnimatePlayer():
     def __init__(self, animation_path, animation_dict):
         self.last_update = pygame.time.get_ticks()
-        self.animation_map = self.load_animations(animation_path, animation_dict)
+        self.animation_map, self.masks_map = self.load_animations(animation_path, animation_dict)
         self.player_frames = self.animation_map["idle"]
+        self.player_mask = self.masks_map["idle"]
         self.index = 0
         self.last_update = pygame.time.get_ticks()
+
+        print(self.animation_map)
+        print(self.masks_map)
 
     def load_animations(self, animation_path, animation_dict):
             FrameGenerator = AnimationFrameGenerator()
             animations = {}
+            masks = {}
             for anim in cfg.DEFAULT_ANIMATIONS_LIST:
-                animations[anim] = FrameGenerator.get_frames(animation_path, animation_dict, anim, "regular")
-                animations[f"{anim}_flipped"] = FrameGenerator.get_frames(animation_path, animation_dict, anim, "flipped")
-            return animations
+                animations[anim], masks[anim] = FrameGenerator.get_frames(animation_path, animation_dict, anim, "regular")
+                animations[f"{anim}_flipped"], masks[f"{anim}_flipped"] = FrameGenerator.get_frames(animation_path, animation_dict, anim, "flipped")
+            return animations, masks
 
     def animate(self, player):
         if cfg.MOVEMENT_TYPE == "mouse":
@@ -42,3 +47,5 @@ class AnimatePlayer():
             if self.index >= len(self.player_frames):
                 self.index = 0
             player.image = self.player_frames[self.index]
+            player.mask = self.player_mask[self.index]
+            

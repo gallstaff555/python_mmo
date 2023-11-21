@@ -11,6 +11,7 @@ class Player(pygame.sprite.Sprite):
         self.move_player = MovePlayer()
         self.animate_player = AnimatePlayer(animation_path, animation_dict)
         self.image = self.animate_player.player_frames[0]
+        self.mask = self.animate_player.player_mask[0]
         self.rect = self.image.get_rect(center = start_pos)
         self.pos = start_pos
         self.move_to = None

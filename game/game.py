@@ -29,11 +29,14 @@ class Game():
         self.collision_group = pygame.sprite.Group()
         self.object_layer = self.tmx_data.get_layer_by_name("Collision")
         for obj in self.object_layer:
-            sprite_image = pygame.Surface((1, 1))  
-            sprite_image.fill(pygame.Color('blue'))  
+            sprite_image = pygame.Surface((5, 5))  
+            sprite_image.fill(pygame.Color('blue')) 
+            sprite_mask = pygame.mask.from_surface(sprite_image) 
             sprite = pygame.sprite.Sprite() 
             sprite.image = sprite_image
             sprite.rect = sprite.image.get_rect(center = (obj.x, obj.y))
+            sprite.mask = sprite_mask
+            
             self.collision_group.add(sprite)
 
         #pygame set up
@@ -72,6 +75,10 @@ class Game():
             self.camera_group.update(self.collision_group)
             self.camera_group.center((self.player.rect.center))
             self.camera_group.draw(self.surface)
+
+            # if cfg.TEST:
+            #     self.image_border = self.player.animate_player.player_frames[0].copy()
+            #     pygame.draw.rect(self.surface, (255,0,0), self.player.rect, 4)
 
             self.scale(self.surface, self.screen.get_size(), self.screen)
             pygame.display.flip()
