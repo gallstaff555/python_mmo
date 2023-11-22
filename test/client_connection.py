@@ -27,5 +27,8 @@ class ClientConnection:
         except socket.error as e:
             print(e)
 
+test = ClientConnection()
+test.send("hello!")
+
 
     

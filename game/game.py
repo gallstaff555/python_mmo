@@ -8,7 +8,8 @@ import os,sys
 cfg = Config()
 
 class Game():
-    def __init__(self):
+    def __init__(self, sio):
+        self.sio = sio
         pygame.init()
         self.screen = pygame.display.set_mode((cfg.SCREEN_WIDTH * cfg.CAMERA_SCALE, cfg.SCREEN_HEIGHT * cfg.CAMERA_SCALE), pygame.RESIZABLE)
         self.surface = pygame.Surface((cfg.SCREEN_WIDTH, cfg.SCREEN_HEIGHT)).convert()
