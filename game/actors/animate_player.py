@@ -13,9 +13,6 @@ class AnimatePlayer():
         self.index = 0
         self.last_update = pygame.time.get_ticks()
 
-        print(self.animation_map)
-        print(self.masks_map)
-
     def load_animations(self, animation_path, animation_dict):
             FrameGenerator = AnimationFrameGenerator()
             animations = {}

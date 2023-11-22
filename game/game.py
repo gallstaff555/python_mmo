@@ -3,7 +3,7 @@
 import pygame, pytmx, pyscroll
 from game.config.config import Config
 from game.actors.player import Player
-import os,sys
+import os,sys,asyncio
 
 cfg = Config()
 
@@ -49,7 +49,7 @@ class Game():
         base_path = getattr(sys, '_MEIPASS', os.path.dirname(os.path.abspath(__file__)))
         return os.path.join(base_path, relative_path)
 
-    def start_game(self):
+    async def start_game(self):
 
         while self.running: 
 
@@ -64,6 +64,7 @@ class Game():
                 self.player.flipped = False
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
+                    await self.sio.emit('disconnect')
                     running = False
                     pygame.quit()
                     sys.exit()
@@ -76,6 +77,9 @@ class Game():
             self.camera_group.update(self.collision_group)
             self.camera_group.center((self.player.rect.center))
             self.camera_group.draw(self.surface)
+
+            #await self.sio.emit('my_message', {'x': 'y'})
+            await self.sio.emit('disconnected')
 
             # if cfg.TEST:
             #     self.image_border = self.player.animate_player.player_frames[0].copy()
