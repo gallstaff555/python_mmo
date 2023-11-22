@@ -18,6 +18,7 @@ class Config:
     PLAYER_SPRITE_SIZE = 64
     DEFAULT_PLAYER_LAYER = 2
     SPEED = 3
+    DIAG_SPEED = SPEED * .7071
 
     # ANIMATION
     DEFAULT_ELF_ANIMATION_PATH = "../assets/elf_pack/sword/elf_sword_color_3"

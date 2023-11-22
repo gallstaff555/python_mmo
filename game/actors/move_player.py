@@ -51,7 +51,7 @@ class MovePlayer():
                 animator.player_frames = animator.animation_map["walk"]
             
             if keys[pygame.K_RIGHT] or keys[pygame.K_LEFT]:
-                player.speed = cfg.SPEED * .707
+                player.speed = cfg.DIAG_SPEED
             else:
                 player.speed = cfg.SPEED
         elif keys[pygame.K_DOWN] and player.rect.y < cfg.DEFAULT_LEVEL_SIZE * 1.5 - 55:
@@ -62,7 +62,7 @@ class MovePlayer():
                 animator.player_frames = animator.animation_map["walk"]
 
             if keys[pygame.K_RIGHT] or keys[pygame.K_LEFT]:
-                player.speed = cfg.SPEED * .707
+                player.speed = cfg.DIAG_SPEED
             else:
                 player.speed = cfg.SPEED
         else:
