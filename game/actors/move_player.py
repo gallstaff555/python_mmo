@@ -36,6 +36,7 @@ class MovePlayer():
 
         keys = pygame.key.get_pressed()
 
+        # idle animation
         if not keys[pygame.K_UP] or keys[pygame.K_DOWN] or keys[pygame.K_LEFT] or keys[pygame.K_RIGHT]:
             if player.flipped:
                 animator.player_frames = animator.animation_map["idle_flipped"]
@@ -48,12 +49,22 @@ class MovePlayer():
                 animator.player_frames = animator.animation_map["walk_flipped"]
             else:
                 animator.player_frames = animator.animation_map["walk"]
+            
+            if keys[pygame.K_RIGHT] or keys[pygame.K_LEFT]:
+                player.speed = cfg.SPEED * .707
+            else:
+                player.speed = cfg.SPEED
         elif keys[pygame.K_DOWN] and player.rect.y < cfg.DEFAULT_LEVEL_SIZE * 1.5 - 55:
             player.direction_y = 1
             if player.flipped:
                 animator.player_frames = animator.animation_map["walk_flipped"]
             else:
                 animator.player_frames = animator.animation_map["walk"]
+
+            if keys[pygame.K_RIGHT] or keys[pygame.K_LEFT]:
+                player.speed = cfg.SPEED * .707
+            else:
+                player.speed = cfg.SPEED
         else:
             player.direction_y = 0
 
