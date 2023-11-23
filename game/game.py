@@ -8,8 +8,7 @@ import os,sys,asyncio
 cfg = Config()
 
 class Game():
-    def __init__(self, sio):
-        self.sio = sio
+    def __init__(self):
         pygame.init()
         self.screen = pygame.display.set_mode((cfg.SCREEN_WIDTH * cfg.CAMERA_SCALE, cfg.SCREEN_HEIGHT * cfg.CAMERA_SCALE), pygame.RESIZABLE)
         self.surface = pygame.Surface((cfg.SCREEN_WIDTH, cfg.SCREEN_HEIGHT)).convert()
@@ -49,7 +48,7 @@ class Game():
         base_path = getattr(sys, '_MEIPASS', os.path.dirname(os.path.abspath(__file__)))
         return os.path.join(base_path, relative_path)
 
-    async def start_game(self):
+    def start_game(self):
 
         while self.running: 
 
@@ -64,7 +63,6 @@ class Game():
                 self.player.flipped = False
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
-                    await self.sio.emit('disconnect')
                     running = False
                     pygame.quit()
                     sys.exit()
@@ -78,8 +76,6 @@ class Game():
             self.camera_group.center((self.player.rect.center))
             self.camera_group.draw(self.surface)
 
-            #await self.sio.emit('my_message', {'x': 'y'})
-            await self.sio.emit('disconnected')
 
             # if cfg.TEST:
             #     self.image_border = self.player.animate_player.player_frames[0].copy()
