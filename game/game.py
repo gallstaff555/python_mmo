@@ -3,12 +3,17 @@
 import pygame, pytmx, pyscroll
 from game.config.config import Config
 from game.actors.player import Player
-import os,sys,asyncio
+import os,sys,time,random
+import threading
+import concurrent.futures
 
 cfg = Config()
 
 class Game():
     def __init__(self):
+
+        self.result = [-1]
+
         pygame.init()
         self.screen = pygame.display.set_mode((cfg.SCREEN_WIDTH * cfg.CAMERA_SCALE, cfg.SCREEN_HEIGHT * cfg.CAMERA_SCALE), pygame.RESIZABLE)
         self.surface = pygame.Surface((cfg.SCREEN_WIDTH, cfg.SCREEN_HEIGHT)).convert()
@@ -48,41 +53,62 @@ class Game():
         base_path = getattr(sys, '_MEIPASS', os.path.dirname(os.path.abspath(__file__)))
         return os.path.join(base_path, relative_path)
 
+    def update_server(self, data):
+        time.sleep(.5)
+        print(f"Sending player pos to server: {data}")
+        latest = random.randint(1,100)
+        self.result[0] = latest
+        
+
     def start_game(self):
 
-        while self.running: 
+            result = 0
+        #stop_thread = threading.Event()
+        # with concurrent.futures.ThreadPoolExecutor(max_workers=1) as executor:
+        #     future = executor.submit(self.update_server, (self.player.rect.x, self.player.rect.y))
 
-            pygame.time.Clock().tick(cfg.FPS)
+            while self.running: 
 
-            # Player should face the mouse pointer
-            mouse_x, mouse_y = pygame.mouse.get_pos()
-            cam_x, cam_y = self.my_map_layer.view_rect.topleft
-            if mouse_x / cfg.CAMERA_SCALE + cam_x < self.player.rect.center[0]:
-                self.player.flipped = True 
-            else:
-                self.player.flipped = False
-            for event in pygame.event.get():
-                if event.type == pygame.QUIT:
-                    running = False
-                    pygame.quit()
-                    sys.exit()
-                elif event.type == pygame.MOUSEBUTTONDOWN:
-                    if cfg.MOVEMENT_TYPE == "mouse":
-                        #calculate player true position with camera and camera scale offset 
-                        world_x, world_y = mouse_x / cfg.CAMERA_SCALE + cam_x, mouse_y / cfg.CAMERA_SCALE + cam_y
-                        self.player.move_to = (round(world_x), round(world_y))
+                pygame.time.Clock().tick(cfg.FPS)
 
-            self.camera_group.update(self.collision_group)
-            self.camera_group.center((self.player.rect.center))
-            self.camera_group.draw(self.surface)
+                if (threading.active_count() < 2):
+                    thread = threading.Thread(target=self.update_server, args=((self.player.rect.x, self.player.rect.y),))
+                    thread.start()
+                    print(self.result)
 
 
-            # if cfg.TEST:
-            #     self.image_border = self.player.animate_player.player_frames[0].copy()
-            #     pygame.draw.rect(self.surface, (255,0,0), self.player.rect, 4)
+                # Player should face the mouse pointer
+                mouse_x, mouse_y = pygame.mouse.get_pos()
+                cam_x, cam_y = self.my_map_layer.view_rect.topleft
+                if mouse_x / cfg.CAMERA_SCALE + cam_x < self.player.rect.center[0]:
+                    self.player.flipped = True 
+                else:
+                    self.player.flipped = False
+                for event in pygame.event.get():
+                    if event.type == pygame.QUIT:
+                        running = False
+                        # stop_thread.set()
+                        # thread.join()
+                        pygame.quit()
+                        sys.exit()
+                    elif event.type == pygame.MOUSEBUTTONDOWN:
+                        if cfg.MOVEMENT_TYPE == "mouse":
+                            #calculate player true position with camera and camera scale offset 
+                            world_x, world_y = mouse_x / cfg.CAMERA_SCALE + cam_x, mouse_y / cfg.CAMERA_SCALE + cam_y
+                            self.player.move_to = (round(world_x), round(world_y))
 
-            self.scale(self.surface, self.screen.get_size(), self.screen)
-            pygame.display.flip()
+                self.camera_group.update(self.collision_group)
+                self.camera_group.center((self.player.rect.center))
+                self.camera_group.draw(self.surface)
 
-        pygame.quit()
-        sys.exit()
+                # if cfg.TEST:
+                #     self.image_border = self.player.animate_player.player_frames[0].copy()
+                #     pygame.draw.rect(self.surface, (255,0,0), self.player.rect, 4)
+
+                self.scale(self.surface, self.screen.get_size(), self.screen)
+                pygame.display.flip()
+
+            # stop_thread.set()
+            # thread.join()
+            pygame.quit()
+            sys.exit()
