@@ -31,7 +31,7 @@ if __name__ == "__main__":
     players = {}
 
     with GameServer((HOST, PORT), TCPHandler, players) as server:
-        print(f"Server runnong on {HOST}:{PORT}")
+        print(f"Server running on {HOST}:{PORT}")
         server.serve_forever()
 
 
