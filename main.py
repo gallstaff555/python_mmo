@@ -8,8 +8,13 @@
 #BUGS
 #Fix movmenent speed: diagonally is faster than moving up/down
 
+import argparse
+
 from game.game import Game
 
 if __name__ == '__main__':
-    game = Game()
+    parser = argparse.ArgumentParser(description='Game client arguments')
+    parser.add_argument('--id', type=int, default=1, required=True)
+    args = parser.parse_args()
+    game = Game(args.id)
     value = game.start_game()

@@ -10,9 +10,10 @@ import threading
 cfg = Config()
 
 class Game():
-    def __init__(self):
+    def __init__(self, id):
 
-        self.result = [-1]
+        self.data_from_server = "no_data"
+        self.id = id
         self.client = Client()
 
         pygame.init()
@@ -54,9 +55,9 @@ class Game():
         base_path = getattr(sys, '_MEIPASS', os.path.dirname(os.path.abspath(__file__)))
         return os.path.join(base_path, relative_path)
     
-    def update_server(self, data):
+    def update_server(self, payload):
         time.sleep(1)
-        self.result[0] = self.client.send_message('localhost', 5000, str(data))
+        self.data_from_server = self.client.send_message('localhost', 5000, f"{payload}")
 
     def start_game(self):
 
@@ -65,9 +66,15 @@ class Game():
             pygame.time.Clock().tick(cfg.FPS)
 
             if (threading.active_count() < 2):
-                thread = threading.Thread(target=self.update_server, args=((self.player.rect.x, self.player.rect.y),))
+                payload = {
+                    "name": f"{self.player.name}",
+                    "id": f"{self.id}",
+                    "pos": f"{(self.player.rect.x, self.player.rect.y)}",
+                    "flipped": f"{self.player.flipped}"
+                }
+                thread = threading.Thread(target=self.update_server, args=(payload,))
                 thread.start()
-                print(f"simulated data from server: {self.result}")
+                print(f"simulated data from server: {self.data_from_server}")
 
             # Player should face the mouse pointer
             mouse_x, mouse_y = pygame.mouse.get_pos()
@@ -79,8 +86,6 @@ class Game():
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     running = False
-                    # stop_thread.set()
-                    # thread.join()
                     pygame.quit()
                     sys.exit()
                 elif event.type == pygame.MOUSEBUTTONDOWN:
@@ -100,7 +105,5 @@ class Game():
             self.scale(self.surface, self.screen.get_size(), self.screen)
             pygame.display.flip()
 
-        # stop_thread.set()
-        # thread.join()
         pygame.quit()
         sys.exit()

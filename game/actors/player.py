@@ -8,6 +8,7 @@ cfg = Config()
 class Player(pygame.sprite.Sprite):
     def __init__(self, start_pos, animation_path, animation_dict):
         super().__init__()
+        self.name = "Gallstaff"
         self.move_player = MovePlayer()
         self.animate_player = AnimatePlayer(animation_path, animation_dict)
         self.image = self.animate_player.player_frames[0]
