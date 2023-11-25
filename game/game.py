@@ -10,10 +10,9 @@ import threading
 cfg = Config()
 
 class Game():
-    def __init__(self, id):
+    def __init__(self, name):
 
         self.data_from_server = "no_data"
-        self.id = id
         self.client = Client()
 
         pygame.init()
@@ -29,7 +28,7 @@ class Game():
         self.camera_group = pyscroll.PyscrollGroup(map_layer=self.my_map_layer, default_layer=cfg.DEFAULT_PLAYER_LAYER)
 
         #set up player and add to camera_group
-        self.player = Player(cfg.PLAYER_START, cfg.DEFAULT_ELF_ANIMATION_PATH, cfg.DEFAULT_ELF_ANIMATIONS)
+        self.player = Player(name, cfg.PLAYER_START, cfg.DEFAULT_ELF_ANIMATION_PATH, cfg.DEFAULT_ELF_ANIMATIONS)
         self.camera_group.add(self.player)
 
         # set up invisible collision sprites
@@ -68,13 +67,12 @@ class Game():
             if (threading.active_count() < 2):
                 payload = {
                     "name": f"{self.player.name}",
-                    "id": f"{self.id}",
                     "pos": f"{(self.player.rect.x, self.player.rect.y)}",
                     "flipped": f"{self.player.flipped}"
                 }
                 thread = threading.Thread(target=self.update_server, args=(payload,))
                 thread.start()
-                print(f"simulated data from server: {self.data_from_server}")
+                print(f"Player data from server: {self.data_from_server}")
 
             # Player should face the mouse pointer
             mouse_x, mouse_y = pygame.mouse.get_pos()
