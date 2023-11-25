@@ -13,4 +13,3 @@ from game.game import Game
 if __name__ == '__main__':
     game = Game()
     value = game.start_game()
-    print(int(value))
