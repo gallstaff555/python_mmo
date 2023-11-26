@@ -37,11 +37,14 @@ class MovePlayer():
         keys = pygame.key.get_pressed()
 
         # idle animation
-        if not keys[pygame.K_UP] or keys[pygame.K_DOWN] or keys[pygame.K_LEFT] or keys[pygame.K_RIGHT]:
+        if not (keys[pygame.K_UP] or keys[pygame.K_DOWN] or keys[pygame.K_LEFT] or keys[pygame.K_RIGHT]):
+            player.moving = False
             if player.flipped:
                 animator.player_frames = animator.animation_map["idle_flipped"]
             else:
                 animator.player_frames = animator.animation_map["idle"]
+        else:
+            player.moving = True
 
         if keys[pygame.K_UP] and player.rect.y > -20:
             player.direction_y = -1

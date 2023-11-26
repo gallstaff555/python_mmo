@@ -1,4 +1,5 @@
-from game.actors.BasePlayer import BasePlayer
+from game.actors.base_player import BasePlayer
+#from game.actors.base_player import BasePlayer
 from game.actors.move_player import MovePlayer
 
 class MyPlayer(BasePlayer):

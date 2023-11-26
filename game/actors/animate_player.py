@@ -46,3 +46,26 @@ class AnimatePlayer():
             player.image = self.player_frames[self.index]
             player.mask = self.player_mask[self.index]
             
+    def animate_other_player(self, player):
+    
+        #print(f"Animate other player; flipped: {player.flipped}; moving: {player.moving}")
+
+        if player.moving != "True":
+            if player.flipped == "True":
+                self.player_frames = self.animation_map["idle_flipped"]
+            else: 
+                self.player_frames = self.animation_map["idle"]
+        else:
+            if player.flipped == "True":
+                self.player_frames = self.animation_map["walk_flipped"]  
+            else:
+                self.player_frames = self.animation_map["walk"]
+
+        now = pygame.time.get_ticks()
+        if now - self.last_update > cfg.PLAYER_ANIMATION_TIMER:
+            self.last_update = now
+            self.index += 1
+            if self.index >= len(self.player_frames):
+                self.index = 0
+            player.image = self.player_frames[self.index]
+            player.mask = self.player_mask[self.index]

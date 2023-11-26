@@ -59,21 +59,20 @@ class Game():
         return os.path.join(base_path, relative_path)
 
     def update_server(self, payload):
-        time.sleep(.03)
         self.data_from_server = json.loads(self.client.send_message('localhost', 5000, f"{payload}"))
         
     def update_other_players(self, data):
         for key in data:
+            #print(data[key])
             if key == self.player.name:
                 pass
             elif key in self.other_players:
-                self.other_players[key].update_pos(ast.literal_eval(data[key]))
+                self.other_players[key].update_pos(ast.literal_eval(data[key]["pos"]), data[key]["flipped"], data[key]["moving"])
             else: # add new player
                 print(f"New player {key} joined.")
-                new_player = OtherPlayer(key, ast.literal_eval((data[key])), cfg.ELF)
+                new_player = OtherPlayer(key, ast.literal_eval((data[key]["pos"])), cfg.ELF)
                 self.other_players[key] = new_player
                 self.camera_group.add(new_player)
-
     
     def start_game(self):
 
@@ -86,7 +85,8 @@ class Game():
                     "name": f"{self.player.name}",
                     "pos": f"{(self.player.rect.x, self.player.rect.y)}",
                     "flipped": f"{self.player.flipped}",
-                    "appearance": f"{self.player.race}"
+                    "appearance": f"{self.player.race}", 
+                    "moving": f"{self.player.moving}"
                 }
                 thread = threading.Thread(target=self.update_server, args=(payload,))
                 thread.start()

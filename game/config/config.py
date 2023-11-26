@@ -10,7 +10,7 @@ class Config:
     SCREEN_WIDTH = TILE_SIZE * COL * SCALE
     SCREEN_HEIGHT = TILE_SIZE * ROW * SCALE 
     DEFAULT_LEVEL_SIZE = SCREEN_WIDTH
-    FPS = 30
+    FPS = 20
     
     # Player
     PLAYER_START = (170, 120)

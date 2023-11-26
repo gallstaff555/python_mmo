@@ -15,6 +15,7 @@ class BasePlayer(pygame.sprite.Sprite):
         self.rect = self.image.get_rect(center = start_pos)
         self.pos = start_pos
         self.move_to = None
+        self.moving = False
         self.speed = cfg.SPEED
         self.flipped = False
         self.direction_x = 0

@@ -21,7 +21,8 @@ class TCPHandler(socketserver.BaseRequestHandler):
             player_name = f"{json_data['name']}"
             if not player_name in self.server.players:
                 print(f"Player {player_name} connected for first time.")
-            self.server.players[player_name] = json_data["pos"]
+            #self.server.players[player_name] = json_data["pos"]
+            self.server.players[player_name] = json_data
             result_string = json.dumps(self.server.players)
             print(f"Player data: {self.server.players}, number of players: {len(self.server.players)}")
 

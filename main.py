@@ -2,9 +2,10 @@
 
 #TODO 
 #FEATURES
+#Add animation 
 #Game server needs to detect if a player disconnected
 #Load levels dynamically, rather than hardcode level data in main.py
-#Server should store player movement and broadcast to other players
+#Load all animations only once, not when player is created
 
 
 import argparse
