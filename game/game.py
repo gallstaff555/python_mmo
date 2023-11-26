@@ -2,17 +2,17 @@
 
 import pygame, pytmx, pyscroll
 from game.config.config import Config
-from game.actors.player import Player
+from game.actors.my_player import MyPlayer
+from game.actors.other_player import OtherPlayer
 from client.client import Client
-import os,sys,time
-import threading
+import os,sys,time,ast,threading,json
 
 cfg = Config()
 
 class Game():
     def __init__(self, name):
 
-        self.data_from_server = "no_data"
+        self.data_from_server = {}
         self.client = Client()
 
         pygame.init()
@@ -28,7 +28,7 @@ class Game():
         self.camera_group = pyscroll.PyscrollGroup(map_layer=self.my_map_layer, default_layer=cfg.DEFAULT_PLAYER_LAYER)
 
         #set up player and add to camera_group
-        self.player = Player(name, cfg.PLAYER_START, cfg.DEFAULT_ELF_ANIMATION_PATH, cfg.DEFAULT_ELF_ANIMATIONS)
+        self.player = MyPlayer(name, cfg.PLAYER_START, cfg.ELF)
         self.camera_group.add(self.player)
 
         # set up invisible collision sprites
@@ -45,6 +45,10 @@ class Game():
             
             self.collision_group.add(sprite)
 
+        # group for other players
+        self.other_players = {}
+        #self.other_player_group = pygame.sprite.Group()
+
         #pygame set up
         self.clock = pygame.time.Clock()
         self.scale = pygame.transform.scale
@@ -53,11 +57,24 @@ class Game():
     def resource_path(self, relative_path):
         base_path = getattr(sys, '_MEIPASS', os.path.dirname(os.path.abspath(__file__)))
         return os.path.join(base_path, relative_path)
-    
-    def update_server(self, payload):
-        time.sleep(1)
-        self.data_from_server = self.client.send_message('localhost', 5000, f"{payload}")
 
+    def update_server(self, payload):
+        time.sleep(.03)
+        self.data_from_server = json.loads(self.client.send_message('localhost', 5000, f"{payload}"))
+        
+    def update_other_players(self, data):
+        for key in data:
+            if key == self.player.name:
+                pass
+            elif key in self.other_players:
+                self.other_players[key].update_pos(ast.literal_eval(data[key]))
+            else: # add new player
+                print(f"New player {key} joined.")
+                new_player = OtherPlayer(key, ast.literal_eval((data[key])), cfg.ELF)
+                self.other_players[key] = new_player
+                self.camera_group.add(new_player)
+
+    
     def start_game(self):
 
         while self.running: 
@@ -68,11 +85,13 @@ class Game():
                 payload = {
                     "name": f"{self.player.name}",
                     "pos": f"{(self.player.rect.x, self.player.rect.y)}",
-                    "flipped": f"{self.player.flipped}"
+                    "flipped": f"{self.player.flipped}",
+                    "appearance": f"{self.player.race}"
                 }
                 thread = threading.Thread(target=self.update_server, args=(payload,))
                 thread.start()
-                print(f"Player data from server: {self.data_from_server}")
+                self.update_other_players(self.data_from_server)
+                
 
             # Player should face the mouse pointer
             mouse_x, mouse_y = pygame.mouse.get_pos()
@@ -95,6 +114,7 @@ class Game():
             self.camera_group.update(self.collision_group)
             self.camera_group.center((self.player.rect.center))
             self.camera_group.draw(self.surface)
+            #self.other_player_group.draw(self.surface)
 
             # if cfg.TEST:
             #     self.image_border = self.player.animate_player.player_frames[0].copy()

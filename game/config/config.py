@@ -21,10 +21,14 @@ class Config:
     DIAG_SPEED = SPEED * .7071
 
     # ANIMATION
-    DEFAULT_ELF_ANIMATION_PATH = "../assets/elf_pack/sword/elf_sword_color_3"
-    DEFAULT_ELF_ANIMATIONS = {"idle": 6, "walk": 6, "attack": 6, "death": 6}
-
     DEFAULT_ANIMATIONS_LIST = ["walk", "idle"]
+
+    # ELF ANIMATION
+    RACE = "ELF"
+    DEFAULT_ELF_ANIMATION_PATH = "../assets/elf_pack/sword/elf_sword_color_3"
+    DEFAULT_ELF_ANIMATIONS = {"idle": 6, "walk": 6, "attack": 6, "death": 6} # action: frames
+    ELF = {"path": DEFAULT_ELF_ANIMATION_PATH, "frames": DEFAULT_ELF_ANIMATIONS, "race": RACE}
+    
 
     # CONTROLS
     MOVEMENT_TYPE = "keyboard"

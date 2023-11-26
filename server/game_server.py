@@ -23,7 +23,8 @@ class TCPHandler(socketserver.BaseRequestHandler):
                 print(f"Player {player_name} connected for first time.")
             self.server.players[player_name] = json_data["pos"]
             result_string = json.dumps(self.server.players)
-            print(f"Player data: {self.server.players}")
+            print(f"Player data: {self.server.players}, number of players: {len(self.server.players)}")
+
             self.request.sendall(result_string.encode('utf-8'))
 
 if __name__ == "__main__":
@@ -33,31 +34,4 @@ if __name__ == "__main__":
     with GameServer((HOST, PORT), TCPHandler, players) as server:
         print(f"Server running on {HOST}:{PORT}")
         server.serve_forever()
-
-
-
-# class GameServer(socketserver.BaseRequestHandler):
-#     def __init__(self, request, client_address, server):
-#         super().__init__(request, client_address, server)
-#         self.players = {}
-
-#     def handle(self):
-#         raw_data = self.request.recv(1024).strip()
-#         decoded_data = raw_data.decode("utf-8").replace("'", "\"")
-#         json_data = json.loads(decoded_data)
-#         player_name = f"{json_data['name']}"
-#         if not player_name in self.players:
-#             print(f"Player {player_name} connected for first time.")
-#         self.players[player_name] = json_data["pos"]
-#         result_string = json.dumps(self.players)
-#         self.request.sendall(result_string.encode('utf-8'))
-
-# if __name__ == '__main__':
-    
-#     HOST, PORT = "localhost", 5000
-
-#     with socketserver.TCPServer((HOST, PORT), GameServer) as server:
-#         print(f"Server running on {HOST}:{PORT}")
-#         server.serve_forever()
-
 
