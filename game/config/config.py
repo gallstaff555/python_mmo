@@ -10,7 +10,7 @@ class Config:
     SCREEN_WIDTH = TILE_SIZE * COL * SCALE
     SCREEN_HEIGHT = TILE_SIZE * ROW * SCALE 
     DEFAULT_LEVEL_SIZE = SCREEN_WIDTH
-    FPS = 20
+    FPS = 30
     
     # Player
     PLAYER_START = (170, 120)
@@ -22,12 +22,12 @@ class Config:
 
     # ANIMATION
     DEFAULT_ANIMATIONS_LIST = ["walk", "idle"]
-
+    DEFAULT_ANIMATIONS = {"idle": 6, "walk": 6, "attack": 6, "death": 6} # action: frames
+    
     # ELF ANIMATION
     RACE = "ELF"
-    DEFAULT_ELF_ANIMATION_PATH = "../assets/elf_pack/sword/elf_sword_color_3"
-    DEFAULT_ELF_ANIMATIONS = {"idle": 6, "walk": 6, "attack": 6, "death": 6} # action: frames
-    ELF = {"path": DEFAULT_ELF_ANIMATION_PATH, "frames": DEFAULT_ELF_ANIMATIONS, "race": RACE}
+    DEFAULT_ELF_ANIMATION_PATH = "../assets/elf/archer/color_3"
+    #ELF = {"path": DEFAULT_ELF_ANIMATION_PATH, "frames": DEFAULT_ELF_ANIMATIONS, "race": RACE}
     
 
     # CONTROLS

@@ -1,8 +1,8 @@
 from game.actors.base_player import BasePlayer
 
 class OtherPlayer(BasePlayer):
-    def __init__(self, name, start_pos, appearance):
-        super().__init__(name, start_pos, appearance)
+    def __init__(self, name, player_class, race, start_pos, animation_path, animation_frames):
+        super().__init__(name, player_class, race, start_pos, animation_path, animation_frames)
         
     def update_pos(self, new_coords, flipped, moving):
         self.rect.x = new_coords[0]

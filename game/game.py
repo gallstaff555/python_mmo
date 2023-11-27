@@ -10,7 +10,7 @@ import os,sys,time,ast,threading,json
 cfg = Config()
 
 class Game():
-    def __init__(self, name):
+    def __init__(self, name, player_class, race, color):
 
         self.data_from_server = {}
         self.client = Client()
@@ -28,7 +28,8 @@ class Game():
         self.camera_group = pyscroll.PyscrollGroup(map_layer=self.my_map_layer, default_layer=cfg.DEFAULT_PLAYER_LAYER)
 
         #set up player and add to camera_group
-        self.player = MyPlayer(name, cfg.PLAYER_START, cfg.ELF)
+        animation_path = f"../assets/{race}/{player_class}/color_{color}"
+        self.player = MyPlayer(name, player_class, race, cfg.PLAYER_START, animation_path, cfg.DEFAULT_ANIMATIONS)
         self.camera_group.add(self.player)
 
         # set up invisible collision sprites
@@ -70,7 +71,11 @@ class Game():
                 self.other_players[key].update_pos(ast.literal_eval(data[key]["pos"]), data[key]["flipped"], data[key]["moving"])
             else: # add new player
                 print(f"New player {key} joined.")
-                new_player = OtherPlayer(key, ast.literal_eval((data[key]["pos"])), cfg.ELF)
+                race = data[key]["race"]
+                player_class = data[key]["player_class"]
+                color = 3
+                animation_path = f"../assets/{race}/{player_class}/color_{color}"
+                new_player = OtherPlayer(key, data[key]["player_class"], data[key]["race"], ast.literal_eval((data[key]["pos"])), animation_path, cfg.DEFAULT_ANIMATIONS)
                 self.other_players[key] = new_player
                 self.camera_group.add(new_player)
     
@@ -83,6 +88,8 @@ class Game():
             if (threading.active_count() < 2):
                 payload = {
                     "name": f"{self.player.name}",
+                    "player_class": f"{self.player.player_class}",
+                    "race": f"{self.player.race}",
                     "pos": f"{(self.player.rect.x, self.player.rect.y)}",
                     "flipped": f"{self.player.flipped}",
                     "appearance": f"{self.player.race}", 
