@@ -17,16 +17,43 @@ class TCPHandler(socketserver.BaseRequestHandler):
             print(f"Client {self.client_address} may have disconnected")
         else:
             decoded_data = raw_data.decode("utf-8").replace("'", "\"")
-            json_data = json.loads(decoded_data)
-            player_name = f"{json_data['name']}"
-            if not player_name in self.server.players:
-                print(f"Player {player_name} connected for first time.")
-            #self.server.players[player_name] = json_data["pos"]
-            self.server.players[player_name] = json_data
+            #print(f"decoded data: {decoded_data}")
+            payload = json.loads(decoded_data)
+            header = payload['header']
+            if header is None:
+                print("Error: no header provided.")
+            elif header == "update":
+                self.handle_update(payload)
+            elif header == "disconnect":
+                self.handle_disconnect(payload)
+            elif header == "connect":
+                self.handle_connection(payload)
+            else:
+                print("Error with message occurred.")
             result_string = json.dumps(self.server.players)
-            print(f"Player data: {self.server.players}, number of players: {len(self.server.players)}")
-
             self.request.sendall(result_string.encode('utf-8'))
+
+    def handle_connection(self, payload):
+        player_name = f"{payload['name']}"
+        if not player_name in self.server.players:
+            print(f"Player {player_name} connected for first time.")
+        self.server.players[player_name] = payload
+        print(f"{player_name} connected!")
+
+    def handle_disconnect(self, payload):
+        player_name = f"{payload['name']}"
+        print(f"Player {player_name} wants to disconnect...")
+        if player_name in self.server.players:
+            del self.server.players[player_name]
+            print(f"{player_name} disconnected!")
+        else:
+            print(f"Could not find {player_name} in list of players.")
+        print(f"Remaining player count: {len(self.server.players)}")
+
+    def handle_update(self, payload):
+        player_name = f"{payload['name']}"
+        self.server.players[player_name] = payload
+        #print(f"Player data: {self.server.players}, number of players: {len(self.server.players)}")
 
 if __name__ == "__main__":
     HOST, PORT = "0.0.0.0", 5000

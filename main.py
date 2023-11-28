@@ -6,6 +6,7 @@
 #Game server needs to detect if a player disconnected
 #Load levels dynamically, rather than hardcode level data in main.py
 #Load all animations only once, not when player is created
+#handle case where player alt+f4 or ctrl-c to close their game
 #add mouse/target reticle 
 
 

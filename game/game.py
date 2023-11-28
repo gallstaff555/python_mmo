@@ -12,8 +12,10 @@ cfg = Config()
 class Game():
     def __init__(self, name, player_class, race, color):
 
+        self.connected_to_server = False
         self.data_from_server = {}
         self.client = Client()
+        self.other_players = {}
 
         pygame.init()
         self.screen = pygame.display.set_mode((cfg.SCREEN_WIDTH * cfg.CAMERA_SCALE, cfg.SCREEN_HEIGHT * cfg.CAMERA_SCALE), pygame.RESIZABLE)
@@ -46,10 +48,6 @@ class Game():
             
             self.collision_group.add(sprite)
 
-        # group for other players
-        self.other_players = {}
-        #self.other_player_group = pygame.sprite.Group()
-
         #pygame set up
         self.clock = pygame.time.Clock()
         self.scale = pygame.transform.scale
@@ -59,12 +57,19 @@ class Game():
         base_path = getattr(sys, '_MEIPASS', os.path.dirname(os.path.abspath(__file__)))
         return os.path.join(base_path, relative_path)
 
+    def disconnect_from_server(self):
+        payload = {
+            "header": "disconnect",
+            "name": f"{self.player.name}"
+        }
+        thread = threading.Thread(target=self.update_server, args=(payload,))
+        thread.start()
+
     def update_server(self, payload):
         self.data_from_server = json.loads(self.client.send_message('localhost', 5000, f"{payload}"))
         
     def update_other_players(self, data):
         for key in data:
-            #print(data[key])
             if key == self.player.name:
                 pass
             elif key in self.other_players:
@@ -78,7 +83,17 @@ class Game():
                 new_player = OtherPlayer(key, data[key]["player_class"], data[key]["race"], ast.literal_eval((data[key]["pos"])), animation_path, cfg.DEFAULT_ANIMATIONS)
                 self.other_players[key] = new_player
                 self.camera_group.add(new_player)
-    
+        # look for players that disconnected by comparing players to keys not found
+        players_to_delete = []
+        for player in self.other_players:  
+            if player not in data:
+                print(f"{player} is no longer connected!")
+                players_to_delete.append(player)
+        for player in players_to_delete:  
+            delete_player = self.other_players[player]
+            self.camera_group.remove(delete_player)
+            del self.other_players[player]
+
     def start_game(self):
 
         while self.running: 
@@ -86,18 +101,25 @@ class Game():
             pygame.time.Clock().tick(cfg.FPS)
 
             if (threading.active_count() < 2):
-                payload = {
-                    "name": f"{self.player.name}",
-                    "player_class": f"{self.player.player_class}",
-                    "race": f"{self.player.race}",
-                    "pos": f"{(self.player.rect.x, self.player.rect.y)}",
-                    "flipped": f"{self.player.flipped}",
-                    "appearance": f"{self.player.race}", 
-                    "moving": f"{self.player.moving}"
-                }
-                thread = threading.Thread(target=self.update_server, args=(payload,))
-                thread.start()
-                self.update_other_players(self.data_from_server)
+                if not self.connected_to_server:
+                    #self.connect_to_server()
+                    header = "connect"
+                    self.connected_to_server = True
+                else:
+                    header = "update"
+                    payload = {
+                        "header": f"{header}",
+                        "name": f"{self.player.name}",
+                        "player_class": f"{self.player.player_class}",
+                        "race": f"{self.player.race}",
+                        "pos": f"{(self.player.rect.x, self.player.rect.y)}",
+                        "flipped": f"{self.player.flipped}",
+                        "appearance": f"{self.player.race}", 
+                        "moving": f"{self.player.moving}"
+                    }
+                    thread = threading.Thread(target=self.update_server, args=(payload,))
+                    thread.start()
+                    self.update_other_players(self.data_from_server)
                 
 
             # Player should face the mouse pointer
@@ -110,6 +132,7 @@ class Game():
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     running = False
+                    self.disconnect_from_server()
                     pygame.quit()
                     sys.exit()
                 elif event.type == pygame.MOUSEBUTTONDOWN:
@@ -121,7 +144,6 @@ class Game():
             self.camera_group.update(self.collision_group)
             self.camera_group.center((self.player.rect.center))
             self.camera_group.draw(self.surface)
-            #self.other_player_group.draw(self.surface)
 
             # if cfg.TEST:
             #     self.image_border = self.player.animate_player.player_frames[0].copy()
@@ -130,5 +152,6 @@ class Game():
             self.scale(self.surface, self.screen.get_size(), self.screen)
             pygame.display.flip()
 
+        self.disconnect_from_server()
         pygame.quit()
         sys.exit()
