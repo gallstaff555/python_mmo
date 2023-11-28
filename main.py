@@ -6,6 +6,7 @@
 #Game server needs to detect if a player disconnected
 #Load levels dynamically, rather than hardcode level data in main.py
 #Load all animations only once, not when player is created
+#add mouse/target reticle 
 
 
 import argparse

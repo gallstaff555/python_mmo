@@ -8,7 +8,7 @@ RUN apt-get update && apt-get install -y \
     net-tools \
     lsof
 
-ENV newuser="mmouser"
+ENV newuser="admin"
 RUN useradd -ms /bin/bash $newuser \
     && usermod -aG sudo $newuser \
     && echo "%sudo ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers
@@ -21,5 +21,4 @@ RUN pip3 install eventlet python-socketio
 
 COPY server.py .
 
-#CMD ["tail", "-f", "/dev/null"]
 CMD ["python3", "server.py"]

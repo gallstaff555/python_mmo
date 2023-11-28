@@ -28,7 +28,6 @@ class Config:
     RACE = "ELF"
     DEFAULT_ELF_ANIMATION_PATH = "../assets/elf/archer/color_3"
     #ELF = {"path": DEFAULT_ELF_ANIMATION_PATH, "frames": DEFAULT_ELF_ANIMATIONS, "race": RACE}
-    
 
     # CONTROLS
     MOVEMENT_TYPE = "keyboard"

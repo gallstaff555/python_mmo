@@ -2,7 +2,7 @@ version: '3.7'
 
 services:
   server:
-    image: server-test
+    image: server
     ports:
       - "5000:5000"
     container_name: server

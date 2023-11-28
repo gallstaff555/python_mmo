@@ -12,7 +12,7 @@ class GameServer(socketserver.TCPServer):
 # use self.server.arg1 to access server data field
 class TCPHandler(socketserver.BaseRequestHandler):
     def handle(self):
-        raw_data = self.request.recv(1024).strip()
+        raw_data = self.request.recv(2048).strip()
         if not raw_data:
             print(f"Client {self.client_address} may have disconnected")
         else:
@@ -29,7 +29,7 @@ class TCPHandler(socketserver.BaseRequestHandler):
             self.request.sendall(result_string.encode('utf-8'))
 
 if __name__ == "__main__":
-    HOST, PORT = "localhost", 5000
+    HOST, PORT = "0.0.0.0", 5000
     players = {}
 
     with GameServer((HOST, PORT), TCPHandler, players) as server:

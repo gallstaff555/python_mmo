@@ -1,3 +1,3 @@
 #!/bin/bash
 
-sudo docker build . -t server-test:latest
+sudo docker build . -t server:latest
