@@ -53,6 +53,9 @@ class TCPHandler(socketserver.BaseRequestHandler):
     def handle_update(self, payload):
         player_name = f"{payload['name']}"
         self.server.players[player_name] = payload
+        for player in self.server.players:
+            print(f"Player data: {self.server.players}")
+        print()
         #print(f"Player data: {self.server.players}, number of players: {len(self.server.players)}")
 
 if __name__ == "__main__":

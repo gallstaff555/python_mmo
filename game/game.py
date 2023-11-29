@@ -73,7 +73,7 @@ class Game():
             if key == self.player.name:
                 pass
             elif key in self.other_players:
-                self.other_players[key].update_pos(ast.literal_eval(data[key]["pos"]), data[key]["flipped"], data[key]["moving"])
+                self.other_players[key].update_pos(ast.literal_eval(data[key]["pos"]), data[key]["flipped"], data[key]["moving"], data[key]["attacking"])
             else: # add new player
                 print(f"New player {key} joined.")
                 race = data[key]["race"]
@@ -115,7 +115,8 @@ class Game():
                         "pos": f"{(self.player.rect.x, self.player.rect.y)}",
                         "flipped": f"{self.player.flipped}",
                         "appearance": f"{self.player.race}", 
-                        "moving": f"{self.player.moving}"
+                        "moving": f"{self.player.moving}",
+                        "attacking": f"{self.player.attacking}"
                     }
                     thread = threading.Thread(target=self.update_server, args=(payload,))
                     thread.start()

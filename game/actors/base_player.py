@@ -17,6 +17,7 @@ class BasePlayer(pygame.sprite.Sprite):
         self.pos = start_pos
         self.move_to = None
         self.moving = False
+        self.attacking = False
         self.speed = cfg.SPEED
         self.flipped = False
         self.direction_x = 0

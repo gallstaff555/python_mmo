@@ -8,6 +8,8 @@
 #Load all animations only once, not when player is created
 #handle case where player alt+f4 or ctrl-c to close their game
 #add mouse/target reticle 
+#experiment with rotating sprite 90 degrees 
+#send full player info during connection, not during update message
 
 
 import argparse

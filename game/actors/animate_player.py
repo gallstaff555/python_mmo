@@ -17,7 +17,7 @@ class AnimatePlayer():
             FrameGenerator = AnimationFrameGenerator()
             animations = {}
             masks = {}
-            for anim in cfg.DEFAULT_ANIMATIONS_LIST:
+            for anim in cfg.DEFAULT_ANIMATIONS.keys():
                 animations[anim], masks[anim] = FrameGenerator.get_frames(animation_path, animation_dict, anim, "regular")
                 animations[f"{anim}_flipped"], masks[f"{anim}_flipped"] = FrameGenerator.get_frames(animation_path, animation_dict, anim, "flipped")
             return animations, masks
@@ -43,14 +43,31 @@ class AnimatePlayer():
             self.index += 1
             if self.index >= len(self.player_frames):
                 self.index = 0
+                if player.attacking:
+                    print("attack completed")
+                player.attacking = False
             player.image = self.player_frames[self.index]
             player.mask = self.player_mask[self.index]
             
     def animate_other_player(self, player):
-    
-        #print(f"Animate other player; flipped: {player.flipped}; moving: {player.moving}")
 
-        if player.moving != "True":
+        # if player.attacking == "True":
+        #     action = "attack"
+        # elif player.moving == "True":
+        #     action = "walk"
+        # else:
+        #     action = "idle"
+
+        # if player.flipped == "True":
+        #     self.player_frames = self.animation_map[f"{action}_flipped"]
+        # else:
+        #     self.player_frames = self.animation_map[f"{action}"] 
+        if player.attacking == "True":
+            if player.flipped == "True":
+                self.player_frames = self.animation_map["attack_flipped"]
+            else: 
+                self.player_frames = self.animation_map["attack"]
+        elif player.moving != "True":
             if player.flipped == "True":
                 self.player_frames = self.animation_map["idle_flipped"]
             else: 

@@ -1,3 +1,5 @@
+import pygame
+
 class Config:
 
     # General
@@ -21,8 +23,9 @@ class Config:
     DIAG_SPEED = SPEED * .7071
 
     # ANIMATION
-    DEFAULT_ANIMATIONS_LIST = ["walk", "idle"]
-    DEFAULT_ANIMATIONS = {"idle": 6, "walk": 6, "attack": 6, "death": 6} # action: frames
+    #DEFAULT_ANIMATIONS_LIST = ["walk", "idle"]
+    #DEFAULT_ANIMATIONS = {"idle": 6, "walk": 6, "attack": 6, "death": 6} # action: frames
+    DEFAULT_ANIMATIONS = {"idle": 6, "walk": 6, "attack": 6}
     
     # ELF ANIMATION
     RACE = "ELF"
@@ -31,3 +34,7 @@ class Config:
 
     # CONTROLS
     MOVEMENT_TYPE = "keyboard"
+    key_left = pygame.K_LEFT
+    key_right = pygame.K_RIGHT
+    key_down = pygame.K_DOWN
+    key_up = pygame.K_UP

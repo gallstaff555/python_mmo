@@ -3,7 +3,7 @@ from game.config.config import Config
 
 cfg = Config()
 
-class MovePlayer():
+class PlayerAction():
 
     def move_by_coordinates(self, player, collision_group):
         dx = player.move_to[0] - player.pos[0]
@@ -31,56 +31,77 @@ class MovePlayer():
         collisions = pygame.sprite.spritecollide(player, collision_group, False, pygame.sprite.collide_mask)
         for collided_sprite in collisions:
             return True
-
-    def keyboard_input(self, player, animator):
-
-        keys = pygame.key.get_pressed()
-
-        # idle animation
-        if not (keys[pygame.K_UP] or keys[pygame.K_DOWN] or keys[pygame.K_LEFT] or keys[pygame.K_RIGHT]):
-            player.moving = False
-            if player.flipped:
-                animator.player_frames = animator.animation_map["idle_flipped"]
-            else:
-                animator.player_frames = animator.animation_map["idle"]
-        else:
-            player.moving = True
-
-        if keys[pygame.K_UP] and player.rect.y > -20:
+        
+    def player_moving_action(self, player, keys, animator, action):
+        if keys[cfg.key_up] and player.rect.y > -20:
             player.direction_y = -1
             if player.flipped:
-                animator.player_frames = animator.animation_map["walk_flipped"]
+                animator.player_frames = animator.animation_map[f"{action}_flipped"]
             else:
-                animator.player_frames = animator.animation_map["walk"]
+                animator.player_frames = animator.animation_map[f"{action}"]
             
-            if keys[pygame.K_RIGHT] or keys[pygame.K_LEFT]:
+            if keys[cfg.key_down] or keys[cfg.key_left]:
                 player.speed = cfg.DIAG_SPEED
             else:
                 player.speed = cfg.SPEED
-        elif keys[pygame.K_DOWN] and player.rect.y < cfg.DEFAULT_LEVEL_SIZE * 1.5 - 55:
+        elif keys[cfg.key_down] and player.rect.y < cfg.DEFAULT_LEVEL_SIZE * 1.5 - 55:
             player.direction_y = 1
             if player.flipped:
-                animator.player_frames = animator.animation_map["walk_flipped"]
+                animator.player_frames = animator.animation_map[f"{action}_flipped"]
             else:
-                animator.player_frames = animator.animation_map["walk"]
+                animator.player_frames = animator.animation_map[f"{action}"]
 
-            if keys[pygame.K_RIGHT] or keys[pygame.K_LEFT]:
+            if keys[cfg.key_right] or keys[cfg.key_right]:
                 player.speed = cfg.DIAG_SPEED
             else:
                 player.speed = cfg.SPEED
         else:
             player.direction_y = 0
 
-        if keys[pygame.K_RIGHT] and player.rect.x < cfg.DEFAULT_LEVEL_SIZE * 1.5 - 40:
+        if keys[cfg.key_right] and player.rect.x < cfg.DEFAULT_LEVEL_SIZE * 1.5 - 40:
             player.direction_x = 1
-            animator.player_frames = animator.animation_map["walk"]
+            animator.player_frames = animator.animation_map[f"{action}"]
             player.flipped = False
-        elif keys[pygame.K_LEFT] and player.rect.x > -20:
+        elif keys[cfg.key_left] and player.rect.x > -20:
             player.direction_x = -1
             player.flipped = True
-            animator.player_frames = animator.animation_map["walk_flipped"]
+            animator.player_frames = animator.animation_map[f"{action}_flipped"]
         else:
             player.direction_x = 0  
+
+    def player_idle_action(self, player, animator, action):
+        #if not (keys[pygame.K_UP] or keys[pygame.K_DOWN] or keys[pygame.K_LEFT] or keys[pygame.K_RIGHT]):
+        player.moving = False
+        if player.flipped:
+            animator.player_frames = animator.animation_map[f"{action}_flipped"]
+        else:
+            animator.player_frames = animator.animation_map[f"{action}"]
+
+
+    def keyboard_input(self, player, animator):
+
+        keys = pygame.key.get_pressed()
+
+        if keys[pygame.K_SPACE] or player.attacking:
+            if not player.attacking:
+                animator.index = 0
+            player.attacking = True
+
+        if not (keys[cfg.key_down] or keys[cfg.key_left] or keys[cfg.key_right] or keys[cfg.key_up]):
+            player.moving = False
+            player.direction_x = 0
+            player.direction_y = 0
+            if player.attacking:
+                self.player_idle_action(player, animator, "attack")
+            else:
+                self.player_idle_action(player, animator, "idle")
+        else:
+            player.moving = True
+            if player.attacking:
+                self.player_moving_action(player, keys, animator, "attack")
+            else:
+                self.player_moving_action(player, keys, animator, "walk")
+            
 
     def update(self, player, animator, collision_group):
         if cfg.MOVEMENT_TYPE == "keyboard":
