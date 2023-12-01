@@ -116,7 +116,8 @@ class Game():
                         "flipped": f"{self.player.flipped}",
                         "appearance": f"{self.player.race}", 
                         "moving": f"{self.player.moving}",
-                        "attacking": f"{self.player.attacking}"
+                        "attacking": f"{self.player.attacking}",
+                        "last_update": f"{int(time.time())}"
                     }
                     thread = threading.Thread(target=self.update_server, args=(payload,))
                     thread.start()

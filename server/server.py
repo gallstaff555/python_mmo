@@ -2,6 +2,7 @@
 
 import socketserver
 import json
+import time 
 
 class GameServer(socketserver.TCPServer):
     def __init__(self, server_address, RequestHandlerClass, players):
@@ -30,6 +31,7 @@ class TCPHandler(socketserver.BaseRequestHandler):
                 self.handle_connection(payload)
             else:
                 print("Error with message occurred.")
+            self.check_for_disconnected_players(payload)
             result_string = json.dumps(self.server.players)
             self.request.sendall(result_string.encode('utf-8'))
 
@@ -53,10 +55,25 @@ class TCPHandler(socketserver.BaseRequestHandler):
     def handle_update(self, payload):
         player_name = f"{payload['name']}"
         self.server.players[player_name] = payload
-        for player in self.server.players:
-            print(f"Player data: {self.server.players}")
-        print()
+        #for player in self.server.players:
+        #    print(f"Player data: {self.server.players}")
+        #print()
         #print(f"Player data: {self.server.players}, number of players: {len(self.server.players)}")
+
+    def check_for_disconnected_players(self, payload):
+        disconnect_timer = 3
+        player_marked_for_deletion = []
+        current_time = int(time.time())
+        for player in self.server.players:
+            last_update = int(self.server.players[player]['last_update'])
+            if current_time - last_update > disconnect_timer:
+                print(f"{player} has not responded for more than {disconnect_timer} seconds.")
+                player_marked_for_deletion.append(player)
+        for player in player_marked_for_deletion:
+            if player in self.server.players:
+                del self.server.players[player]
+                print(f"{player} has been removed from the game.")
+
 
 if __name__ == "__main__":
     HOST, PORT = "0.0.0.0", 5000

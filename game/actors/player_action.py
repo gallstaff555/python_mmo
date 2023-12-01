@@ -83,7 +83,7 @@ class PlayerAction():
         keys = pygame.key.get_pressed()
 
         if keys[pygame.K_SPACE] or player.attacking:
-            if not player.attacking:
+            if not player.attacking: #reset attack animation
                 animator.index = 0
             player.attacking = True
 
